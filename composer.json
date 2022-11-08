@@ -1,7 +1,7 @@
 {
-	"name": "netherphp/empty",
-	"description": "An empty library.",
-	"keywords": [ "php", "empty" ],
+	"name": "netherphp/user",
+	"description": "Provides a basic user login system.",
+	"keywords": [ "php", "user" ],
 	"license": "BSD-2-Clause",
 	"authors":[
 		{
