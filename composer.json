@@ -1,0 +1,39 @@
+{
+	"name": "netherphp/empty",
+	"description": "An empty library.",
+	"keywords": [ "php", "empty" ],
+	"license": "BSD-2-Clause",
+	"authors":[
+		{
+			"name": "Bob Majdak Jr",
+			"email": "bmajdak@php.net",
+			"homepage": "http://pegasusgate.net/+bob",
+			"role": "developer"
+		}
+	],
+	"config": {
+		"preferred-install": {
+			"netherphp/*": "source",
+			"*": "dist"
+		},
+		"allow-plugins": {
+			"netherphp/composer-plugin": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"require": {
+		"php": "^8.1"
+	},
+	"require-dev": {
+		"netherphp/standards": ">=0.1.9",
+		"phpunit/phpunit": "^9.5",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
+	},
+	"bin": [
+	],
+	"autoload": {
+		"psr-0": {
+			"Nether\\":"src/"
+		}
+	}
+}
