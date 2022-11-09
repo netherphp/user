@@ -1,3 +1,148 @@
 <?php
 
+(function() {
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+class App
+extends Nether\Console\Client {
+
+	protected function
+	OnReady():
+	void {
+
+		// get atlantis to load the database config if it is around.
+
+		if(class_exists('\\Nether\\Atlantis\\Engine')) {
+			$App = new Nether\Atlantis\Engine(getcwd());
+		}
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Nether\Console\Meta\Command('get')]
+	#[Nether\Console\Meta\Info('View information about the user.')]
+	#[Nether\Console\Meta\Arg('id/alias', 'Username / User Alias')]
+	public function
+	HandleUserGet():
+	int {
+
+		$Lookup = $this->GetInput(1);
+		$User = $this->GetUser($Lookup);
+
+		Nether\Console\Util::ObjectDump($User);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('create')]
+	#[Nether\Console\Meta\Info('Create a new user.')]
+	#[Nether\Console\Meta\Arg('alias', 'Username / User Alias')]
+	#[Nether\Console\Meta\Arg('email', 'Email address.')]
+	#[Nether\Console\Meta\Error(1, 'Alias and Email must be specified.')]
+	public function
+	HandleUserCreate():
+	int {
+
+		$Alias = $this->GetInput(1);
+		$Email = $this->GetInput(2);
+
+		if(!$Alias || !$Email)
+		$this->Quit(1);
+
+		////////
+
+		$User = Nether\User\Entity::Insert([
+			'Alias' => $Alias,
+			'Email' => $Email
+		]);
+
+		Nether\Console\Util::ObjectDump($User);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('update')]
+	#[Nether\Console\Meta\Info('Update information for a user.')]
+	#[Nether\Console\Meta\Arg('id/alias', 'Username / User Alias')]
+	#[Nether\Console\Meta\Error(1, 'user not found')]
+	public function
+	HandleUserUpdate():
+	int {
+
+		$Table = Nether\User\Entity::GetTableInfo();
+		$Lookup = $this->GetInput(1);
+		$User = $this->GetUser($Lookup);
+		$Dataset = [];
+		$Key = NULL;
+
+		if(!$User)
+		$this->Quit(1);
+
+		////////
+
+		foreach(array_keys($Table->Fields) as $Key)
+		if($this->HasOption($Key))
+		$Dataset[$Key] = $this->GetOption($Key);
+
+		////////
+
+		$User->Update($Dataset);
+
+		Nether\Console\Util::ObjectDump($User);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('drop')]
+	#[Nether\Console\Meta\Info('View information about the user.')]
+	#[Nether\Console\Meta\Arg('id/alias', 'Username / User Alias')]
+	public function
+	HandleUserDrop():
+	int {
+
+		$Lookup = $this->GetInput(1);
+		$User = $this->GetUser($Lookup);
+
+		if($User) {
+			$this->PrintLn("deleted: {$User->ID} {$User->Alias} {$User->Email}");
+			$User->Drop();
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	GetUser(mixed $Input):
+	?Nether\User\Entity {
+
+		$User = NULL;
+
+		////////
+
+		if(is_numeric($Input))
+		$User = Nether\User\Entity::GetByID((int)$Input);
+
+		elseif(str_contains($Input, '@'))
+		$User = Nether\User\Entity::GetByEmail($Input);
+
+		else
+		$User = Nether\User\Entity::GetByAlias($Input);
+
+		////////
+
+		return $User;
+	}
+
+}
+
+exit((new App)->Run());
+
 
