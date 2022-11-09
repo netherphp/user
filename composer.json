@@ -31,6 +31,7 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
 	},
 	"bin": [
+		"bin/nuser"
 	],
 	"autoload": {
 		"psr-0": {
