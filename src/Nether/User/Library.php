@@ -20,8 +20,20 @@ class Library {
 	InitWithAtlantisEngine(Nether\Atlantis\Engine $App):
 	void {
 
-		$LocalPath = dirname(__FILE__);
-		$Scanner = new Nether\Avenue\RouteScanner("{$LocalPath}/Routes");
+		$RouterSource = $App->Router->GetSource();
+		$RouterPath = dirname(__FILE__);
+
+		////////
+
+		// if the app is using a compiled route map then skip the dynamic
+		// scanning for performance.
+
+		if($RouterSource === Nether\Avenue\Library::RouteSourceFile)
+		return;
+
+		////////
+
+		$Scanner = new Nether\Avenue\RouteScanner("{$RouterPath}/Routes");
 		$Map = $Scanner->Generate();
 
 		////////

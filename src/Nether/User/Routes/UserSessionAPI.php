@@ -10,8 +10,10 @@ extends Api {
 
 	#[RouteHandler('/api/user/session/login')]
 	public function
-	SessionLogin():
+	HandleLogin():
 	void {
+
+		echo $this->App->Router->GetSource();
 
 		$this->SetMessage('TODO');
 
@@ -20,7 +22,7 @@ extends Api {
 
 	#[RouteHandler('/api/user/session/logout')]
 	public function
-	SessionLogout():
+	HandleLogout():
 	void {
 
 		$this->SetMessage('TODO');
