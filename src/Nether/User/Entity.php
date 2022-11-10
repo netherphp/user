@@ -25,6 +25,21 @@ extends Nether\Database\Prototype {
 	public string
 	$Email;
 
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Nether\Database\Meta\FieldIndex]
+	public int
+	$TimeCreated;
+
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Nether\Database\Meta\FieldIndex]
+	public int
+	$TimeSeen;
+
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Nether\Database\Meta\FieldIndex]
+	public int
+	$TimeBanned;
+
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
 	#[Nether\Database\Meta\FieldIndex]
 	public ?string
@@ -64,6 +79,22 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	Insert(iterable $Input):
+	?static {
+
+		$Dataset = new Datastore([
+			'TimeCreated' => time()
+		]);
+
+		$Dataset->MergeRight($Input);
+
+		return parent::Insert($Dataset);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
 	FindExtendOptions(Datastore $Opt):
 	void {
 
@@ -74,14 +105,18 @@ extends Nether\Database\Prototype {
 		$Opt['SearchAlias'] ??= NULL;
 		$Opt['SearchEmail'] ??= NULL;
 
+		$Opt['Sort'] ??= 'alias-az';
+
 		return;
 	}
 
-	static public function
+	static protected function
 	FindExtendFilters(Verse $SQL, Datastore $Opt):
 	void {
 
 		$Searches = [];
+
+		////////
 
 		if($Opt['Alias'] !== NULL) {
 			$SQL->Where('Main.Alias LIKE :Alias');
@@ -104,6 +139,34 @@ extends Nether\Database\Prototype {
 
 			if(count($Searches))
 			$SQL->Where(join(' OR ', $Searches));
+		}
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Verse $SQL, Datastore $Input):
+	void {
+
+		switch($Input['Sort']) {
+			case 'alias-az':
+				$SQL->Sort('Main.Alias', $SQL::SortAsc);
+			break;
+			case 'alias-za':
+				$SQL->Sort('Main.Alias', $SQL::SortDesc);
+			break;
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
+			case 'oldest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortAsc);
+			break;
+			case 'recent-seen':
+				$SQL->Sort('Main.TimeSeen', $SQL::SortDesc);
+			break;
+			case 'recent-banned':
+				$SQL->Sort('Main.TimeSeen', $SQL::SortDesc);
+			break;
 		}
 
 		return;

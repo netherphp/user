@@ -9,9 +9,22 @@ class Library {
 	Init(Nether\Object\Datastore $Config, ...$Argv):
 	void {
 
+		// optional: register urls with atlantis.
+		// this stack is making use of some oldschool php fuckery where it
+		// won't cry about non-existing classes until that specific line of
+		// code gets evaluated so this code can execute without crashing
+		// if atlantis engine isn't installed. if you pass something that
+		// smells like atlantis we'll check its not a duck first.
+
 		if(isset($Argv['App']) && is_object($Argv['App']))
+		if(method_exists($Argv['App'], 'GetProjectEnv'))
 		if($Argv['App'] instanceof Nether\Atlantis\Engine)
-		static::InitWithAtlantisEngine($Argv['App']);
+		match($Argv['App']->Router->GetSource()) {
+			Nether\Avenue\Library::RouteSourceScan
+			=> static::InitWithAtlantisEngine($Argv['App']),
+			default
+			=> NULL
+		};
 
 		return;
 	}
@@ -20,16 +33,7 @@ class Library {
 	InitWithAtlantisEngine(Nether\Atlantis\Engine $App):
 	void {
 
-		$RouterSource = $App->Router->GetSource();
 		$RouterPath = dirname(__FILE__);
-
-		////////
-
-		// if the app is using a compiled route map then skip the dynamic
-		// scanning for performance.
-
-		if($RouterSource === Nether\Avenue\Library::RouteSourceFile)
-		return;
 
 		////////
 
