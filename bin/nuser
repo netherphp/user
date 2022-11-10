@@ -27,29 +27,48 @@ extends Nether\Console\Client {
 	#[Nether\Console\Meta\Command('get')]
 	#[Nether\Console\Meta\Info('View information about the user.')]
 	#[Nether\Console\Meta\Arg('id/alias', 'Username / User Alias')]
+	#[Nether\Console\Meta\Error(1, 'user not found')]
 	public function
 	HandleUserGet():
 	int {
 
 		$Lookup = $this->GetInput(1);
+		$Format = $this->GetOption('Format') ?: 'json';
+		$Full = $this->GetOption('Full') ?: FALSE;
 		$User = $this->GetUser($Lookup);
 
-		Nether\Console\Util::ObjectDump($User);
+		if(!$User)
+		$this->Quit(1);
+
+		if($Format === 'json') {
+			if(!$Full)
+			echo json_encode([ 'ID'=> $User->ID, 'Alias'=> $User->Alias, 'Email'=> $User->Email ]);
+			else
+			echo json_encode($User);
+
+			echo PHP_EOL;
+		}
 
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command('create')]
+	#[Nether\Console\Meta\Command('insert')]
 	#[Nether\Console\Meta\Info('Create a new user.')]
 	#[Nether\Console\Meta\Arg('alias', 'Username / User Alias')]
 	#[Nether\Console\Meta\Arg('email', 'Email address.')]
 	#[Nether\Console\Meta\Error(1, 'Alias and Email must be specified.')]
+	#[Nether\Console\Meta\Error(2, 'Failed to insert new user.')]
 	public function
-	HandleUserCreate():
+	HandleUserInsert():
 	int {
 
-		$Alias = $this->GetInput(1);
-		$Email = $this->GetInput(2);
+		$Format = $this->GetOption('Format') ?: 'json';
+		$Full = $this->GetOption('Full') ?: FALSE;
+
+		////////
+
+		$Alias = $this->GetOption('Alias');
+		$Email = $this->GetOption('Email');
 
 		if(!$Alias || !$Email)
 		$this->Quit(1);
@@ -61,7 +80,17 @@ extends Nether\Console\Client {
 			'Email' => $Email
 		]);
 
-		Nether\Console\Util::ObjectDump($User);
+		if(!$User)
+		$this->Quit(2);
+
+		////////
+
+		if($Format === 'json') {
+			if(!$Full)
+			static::PrintLn(json_encode([ 'ID'=> $User->ID, 'Alias'=> $User->Alias, 'Email'=> $User->Email ]));
+			else
+			static::PrintLn(json_encode($User));
+		}
 
 		return 0;
 	}
@@ -111,6 +140,60 @@ extends Nether\Console\Client {
 		if($User) {
 			$this->PrintLn("deleted: {$User->ID} {$User->Alias} {$User->Email}");
 			$User->Drop();
+		}
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('find')]
+	#[Nether\Console\Meta\Info('Find users that fit specified criteria.')]
+	#[Nether\Console\Meta\Value('--Alias', 'Find user with specified Alias.')]
+	#[Nether\Console\Meta\Value('--Email', 'Find user with specified Email.')]
+	#[Nether\Console\Meta\Value('--Search', 'Find users that match the specified query.')]
+	#[Nether\Console\Meta\Toggle('--SearchAlias', 'Include the Alias as part of the Search query.')]
+	#[Nether\Console\Meta\Toggle('--SearchEmail', 'Include the Email as part of the Search query.')]
+	public function
+	HandleUserFind():
+	int {
+
+		$Users = NULL;
+		$User = NULL;
+		$UKey = NULL;
+		$Format = $this->GetOption('Format') ?: 'json';
+		$Full = $this->GetOption('Full') ?: FALSE;
+
+		////////
+
+		$Users = Nether\User\Entity::Find([
+			'Alias'       => ($this->GetOption('Alias') ?: NULL),
+			'Email'       => ($this->GetOption('Email') ?: NULL),
+
+			'Search'      => ($this->GetOption('Search') ?: NULL),
+			'SearchAlias' => (bool)$this->GetOption('SearchAlias'),
+			'SearchEmail' => (bool)$this->GetOption('SearchEmail'),
+
+			'Page'        => ($this->GetOption('Page') ?: 1),
+			'Limit'       => ($this->GetOption('Limit') ?: 0)
+		]);
+
+		////////
+
+		if($Format === 'json') {
+			echo '[', PHP_EOL;
+			foreach($Users as $UKey => $User) {
+				echo chr(9);
+
+				if(!$Full)
+				echo json_encode([ 'ID'=> $User->ID, 'Alias'=> $User->Alias, 'Email'=> $User->Email ]);
+				else
+				echo json_encode($User);
+
+				if(!$Users->IsLastKey($UKey))
+				echo ',';
+
+				echo PHP_EOL;
+			}
+			echo ']', PHP_EOL;
 		}
 
 		return 0;

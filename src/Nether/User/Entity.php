@@ -3,6 +3,9 @@
 namespace Nether\User;
 use Nether;
 
+use Nether\Database\Verse;
+use Nether\Object\Datastore;
+
 #[Nether\Database\Meta\TableClass('Users')]
 class Entity
 extends Nether\Database\Prototype {
@@ -55,6 +58,55 @@ extends Nether\Database\Prototype {
 	?static {
 
 		return static::GetByField('Email', $Email);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FindExtendOptions(Datastore $Opt):
+	void {
+
+		$Opt['Alias'] ??= NULL;
+		$Opt['Email'] ??= NULL;
+
+		$Opt['Search'] ??= NULL;
+		$Opt['SearchAlias'] ??= NULL;
+		$Opt['SearchEmail'] ??= NULL;
+
+		return;
+	}
+
+	static public function
+	FindExtendFilters(Verse $SQL, Datastore $Opt):
+	void {
+
+		$Searches = [];
+
+		if($Opt['Alias'] !== NULL) {
+			$SQL->Where('Main.Alias LIKE :Alias');
+		}
+
+		if($Opt['Email'] !== NULL) {
+			$SQL->Where('Main.Email LIKE :Email');
+		}
+
+		if($Opt['Search'] !== NULL) {
+			if($Opt['SearchAlias']) {
+				$Opt['SearchAlias'] = "%{$Opt['Search']}%";
+				$Searches[] = 'Main.Alias LIKE :SearchAlias';
+			}
+
+			if($Opt['SearchEmail']) {
+				$Opt['SearchEmail'] = "%{$Opt['Search']}%";
+				$Searches[] = 'Main.Email LIKE :SearchEmail';
+			}
+
+			if(count($Searches))
+			$SQL->Where(join(' OR ', $Searches));
+		}
+
+		return;
 	}
 
 }
