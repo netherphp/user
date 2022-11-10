@@ -9,6 +9,8 @@ class Library {
 	Init(Nether\Object\Datastore $Config, ...$Argv):
 	void {
 
+		// static::PrepareDefaultConfig($Config);
+
 		// optional: register urls with atlantis.
 		// this stack is making use of some oldschool php fuckery where it
 		// won't cry about non-existing classes until that specific line of
@@ -54,5 +56,20 @@ class Library {
 
 		return;
 	}
+
+	static public function
+	PrepareDefaultConfig(?Nether\Object\Datastore $Config=NULL):
+	Nether\Object\Datastore {
+
+		if($Config === NULL)
+		$Config = new Nether\Object\Datastore;
+
+		$Config->BlendRight([
+
+		]);
+
+		return $Config;
+	}
+
 
 }

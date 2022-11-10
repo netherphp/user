@@ -3,6 +3,7 @@
 namespace Nether\User;
 use Nether;
 
+use Exception;
 use Nether\Database\Verse;
 use Nether\Object\Datastore;
 
@@ -20,7 +21,7 @@ extends Nether\Database\Prototype {
 	public string
 	$Alias;
 
-	#[Nether\Database\Meta\TypeChar(Size: 254, Nullable: FALSE, Variable: TRUE)]
+	#[Nether\Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
 	#[Nether\Database\Meta\FieldIndex]
 	public string
 	$Email;
@@ -50,13 +51,63 @@ extends Nether\Database\Prototype {
 	public ?string
 	$AuthGoogleID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 128)]
+	#[Nether\Database\Meta\TypeChar(Size: 255)]
 	public ?string
 	$PHash;
 
 	#[Nether\Database\Meta\TypeChar(Size: 128)]
 	public ?string
 	$PSand;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	DisablePassword():
+	static {
+
+		$this->Update([
+			'PHash' => NULL
+		]);
+
+		return $this;
+	}
+
+	public function
+	UpdatePassword(string $Password):
+	static {
+
+		$this->Update([
+			'PHash' => password_hash($Password, PASSWORD_DEFAULT)
+		]);
+
+		return $this;
+	}
+
+	public function
+	UpdateSandShift():
+	static {
+
+		$this->Update([
+			'PSand' => static::GetPocketSand()
+		]);
+
+		return $this;
+	}
+
+	public function
+	UpdateTimeSeen(int $When=-1):
+	static {
+
+		if($When === -1)
+		$When = time();
+
+		$this->Update([
+			'TimeSeen' => $When
+		]);
+
+		return $this;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -79,11 +130,23 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	GetPocketSand():
+	string {
+
+		return hash('sha512', random_bytes(128));
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
 	Insert(iterable $Input):
 	?static {
 
 		$Dataset = new Datastore([
-			'TimeCreated' => time()
+			'TimeCreated' => time(),
+			'PHash'       => NULL,
+			'PSand'       => static::GetPocketSand()
 		]);
 
 		$Dataset->MergeRight($Input);

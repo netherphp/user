@@ -23,7 +23,8 @@
 	},
 	"require": {
 		"php": "^8.1",
-		"netherphp/database": "dev-redux"
+		"netherphp/database": "dev-redux",
+		"netherphp/common": "dev-master"
 	},
 	"require-dev": {
 		"netherphp/standards": ">=0.1.9",
