@@ -4,12 +4,14 @@ namespace Nether\User;
 use Nether;
 
 use Exception;
+use Stringable;
 use Nether\Database\Verse;
 use Nether\Object\Datastore;
 
 #[Nether\Database\Meta\TableClass('Users')]
 class Entity
-extends Nether\Database\Prototype {
+extends Nether\Database\Prototype
+implements Stringable {
 
 	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
 	#[Nether\Database\Meta\PrimaryKey]
@@ -58,6 +60,17 @@ extends Nether\Database\Prototype {
 	#[Nether\Database\Meta\TypeChar(Size: 128)]
 	public ?string
 	$PSand;
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	__ToString():
+	string {
+
+		return "User({$this->ID}, {$this->Alias})";
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
