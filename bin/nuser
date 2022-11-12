@@ -267,7 +267,7 @@ extends Nether\Console\Client {
 	}
 
 	#[Nether\Console\Meta\Command('seen')]
-	#[Nether\Console\Meta\Info('Display when a user was last seen.')]
+	#[Nether\Console\Meta\Info('Display user last seen status.')]
 	#[Nether\Console\Meta\Arg('id/alias/email', 'User ID, Alias, or Email')]
 	#[Nether\Console\Meta\Toggle('--now', 'Set last seen to now.')]
 	#[Nether\Console\Meta\Value('--set', 'Unix Timestamp to set to.')]
@@ -312,6 +312,68 @@ extends Nether\Console\Client {
 		$this->FormatLn(
 			'%s last seen: %s',
 			$User, $Timeframe->GetSuffixedString(Ago: 'ago')
+		);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('ban')]
+	#[Nether\Console\Meta\Info('Manage user ban status.')]
+	#[Nether\Console\Meta\Arg('id/alias/email', 'User ID, Alias, or Email')]
+	#[Nether\Console\Meta\Toggle('--ban', 'Ban the user now.')]
+	#[Nether\Console\Meta\Toggle('--unban', 'Unban the user.')]
+	#[Nether\Console\Meta\Value('--set', 'Unix Timestamp to set to.')]
+	#[Nether\Console\Meta\Value('--when', 'String that can be digested by strtotime to set to.')]
+	#[Nether\Console\Meta\Error(1, 'user not found')]
+	public function
+	HandleUserBan():
+	int {
+
+		$Lookup = $this->GetInput(1);
+		$User = $this->LookupUserBy($Lookup);
+		$TimeToSet = NULL;
+
+		////////
+
+		if($this->HasOption('Ban'))
+		$TimeToSet = strtotime('now');
+
+		elseif($this->HasOption('Unban'))
+		$TimeToSet = 0;
+
+		elseif($this->HasOption('Set'))
+		$TimeToSet = (int)$this->GetOption('Set');
+
+		elseif($this->HasOption('When'))
+		$TimeToSet = strtotime($this->GetOption('When'));
+
+		////////
+
+		if(!$User)
+		$this->Quit(1);
+
+		if($TimeToSet !== NULL)
+		$User->UpdateTimeBanned($TimeToSet);
+
+		////////
+
+		if(!$User->TimeBanned) {
+			$this->FormatLn('%s is not banned', $User);
+			return 0;
+		}
+
+		$Timeframe = (
+			(new Nether\Common\Units\Timeframe($User->TimeBanned))
+			->SetLabelCase(-1)
+			->SetLabelSep(NULL)
+			->SetLabelSet(1)
+		);
+
+		$this->FormatLn(
+			'%s banned on %s (%s)',
+			$User,
+			date('Y-m-d', $User->TimeBanned),
+			$Timeframe->GetSuffixedString(Ago: 'ago')
 		);
 
 		return 0;

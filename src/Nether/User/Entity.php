@@ -5,6 +5,7 @@ use Nether;
 
 use Exception;
 use Stringable;
+use Nether\User\Library;
 use Nether\Database\Verse;
 use Nether\Object\Datastore;
 
@@ -43,6 +44,10 @@ implements Stringable {
 	public int
 	$TimeBanned;
 
+	#[Nether\Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
+	public int
+	$Admin;
+
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
 	#[Nether\Database\Meta\FieldIndex]
 	public ?string
@@ -61,7 +66,6 @@ implements Stringable {
 	public ?string
 	$PSand;
 
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -74,6 +78,16 @@ implements Stringable {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	HasItBeenSinceSeen(?int $Diff=NULL):
+	bool {
+
+		if($Diff === NULL)
+		$Diff = Library::$Config[Library::ConfUpdateSeenAfter];
+
+		return (time() - $this->TimeSeen) >= $Diff;
+	}
 
 	public function
 	DisablePassword():
@@ -109,6 +123,20 @@ implements Stringable {
 	}
 
 	public function
+	UpdateTimeBanned(int $When=-1):
+	static {
+
+		if($When === -1)
+		$When = time();
+
+		$this->Update([
+			'TimeBanned' => $When
+		]);
+
+		return $this;
+	}
+
+	public function
 	UpdateTimeSeen(int $When=-1):
 	static {
 
@@ -134,6 +162,13 @@ implements Stringable {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	static public function
+	Config(string $Key):
+	mixed {
+
+		return Library::$Config[$Key];
+	}
 
 	static public function
 	GetByAlias(string $Alias):

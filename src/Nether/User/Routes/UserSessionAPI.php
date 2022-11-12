@@ -39,9 +39,13 @@ extends Api {
 		if(!$User->ValidatePassword($this->Request->Data->Password))
 		$this->Quit(4, 'invalid password');
 
+		if($User->TimeBanned)
+		$this->Quit(5, 'account is banned');
+
 		////////
 
 		$User->TransmitSession();
+		$User->UpdateTimeSeen();
 
 		$this
 		->SetPayload([

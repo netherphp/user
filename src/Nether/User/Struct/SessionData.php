@@ -3,16 +3,21 @@
 namespace Nether\User\Struct;
 use Nether;
 
+use Stringable;
 use Nether\Common\Datafilters;
 
 class SessionData
-extends Nether\Object\Prototype {
+extends Nether\Object\Prototype
+implements Stringable {
 
 	public int
 	$UserID;
 
 	public string
 	$UserHash;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	__ToString():
@@ -21,9 +26,16 @@ extends Nether\Object\Prototype {
 		return $this->Encode();
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	Encode():
 	string {
+	/*//
+	@date 2022-11-11
+	base64 encode a json description of this object.
+	//*/
 
 		return Datafilters::Base64Encode(json_encode([
 			'UserID'   => $this->UserID,
@@ -34,6 +46,10 @@ extends Nether\Object\Prototype {
 	static public function
 	Decode(string $Input):
 	?static {
+	/*//
+	@date 2022-11-11
+	base64 decode the json description of an object.
+	//*/
 
 		if(!$Input)
 		return NULL;

@@ -3,13 +3,39 @@
 namespace Nether\User;
 use Nether;
 
-class Library {
+use Nether\Common\Values;
+
+class Library
+extends Nether\Common\Library {
+
+	const
+	ConfUpdateSeenAfter = 'Nether.User.SeenUpdateAfter',
+	ConfSessionName     = 'Nether.User.SessionName',
+	ConfSessionExpire   = 'Nether.User.SessionExpire';
+
+	static public function
+	PrepareDefaultConfig(?Nether\Object\Datastore $Config=NULL):
+	Nether\Object\Datastore {
+
+		parent::PrepareDefaultConfig($Config);
+
+		$Config->BlendRight([
+			static::ConfUpdateSeenAfter => Values::SecPerMin,
+			static::ConfSessionName     => 'NetherUserSession',
+			static::ConfSessionExpire   => (Values::SecPerDay * 12)
+		]);
+
+		return $Config;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static public function
 	Init(Nether\Object\Datastore $Config, ...$Argv):
 	void {
 
-		// static::PrepareDefaultConfig($Config);
+		static::$Config = static::PrepareDefaultConfig($Config);
 
 		// optional: register urls with atlantis.
 		// this stack is making use of some oldschool php fuckery where it
@@ -21,12 +47,7 @@ class Library {
 		if(isset($Argv['App']) && is_object($Argv['App']))
 		if(method_exists($Argv['App'], 'GetProjectEnv'))
 		if($Argv['App'] instanceof Nether\Atlantis\Engine)
-		match($Argv['App']->Router->GetSource()) {
-			Nether\Avenue\Library::RouteSourceScan
-			=> static::InitWithAtlantisEngine($Argv['App']),
-			default
-			=> NULL
-		};
+		static::InitWithAtlantisEngine($Argv['App']);
 
 		return;
 	}
@@ -35,41 +56,34 @@ class Library {
 	InitWithAtlantisEngine(Nether\Atlantis\Engine $App):
 	void {
 
-		$RouterPath = dirname(__FILE__);
+		// register some data with the framework.
 
-		////////
+		$App->User = Nether\User\EntitySession::Get();
 
-		$Scanner = new Nether\Avenue\RouteScanner("{$RouterPath}/Routes");
-		$Map = $Scanner->Generate();
+		// add some routes to the system.
 
-		////////
+		if($App->Router->GetSource() === 'dirscan') {
+			$RouterPath = dirname(__FILE__);
+			$Scanner = new Nether\Avenue\RouteScanner("{$RouterPath}/Routes");
+			$Map = $Scanner->Generate();
 
-		$Map['Verbs']->Each(
-			fn(Nether\Object\Datastore $Handlers)=>
-			$App->Router->AddHandlers($Handlers)
-		);
+			////////
 
-		$Map['Errors']->Each(
-			fn(Nether\Avenue\Meta\RouteHandler $Handler, int $Code)
-			=> $App->Router->AddErrorHandler($Code, $Handler)
-		);
+			$Map['Verbs']->Each(
+				fn(Nether\Object\Datastore $Handlers)
+				=> $App->Router->AddHandlers($Handlers)
+			);
+
+			$Map['Errors']->Each(
+				fn(Nether\Avenue\Meta\RouteHandler $Handler, int $Code)
+				=> $App->Router->AddErrorHandler($Code, $Handler)
+			);
+		}
 
 		return;
 	}
 
-	static public function
-	PrepareDefaultConfig(?Nether\Object\Datastore $Config=NULL):
-	Nether\Object\Datastore {
 
-		if($Config === NULL)
-		$Config = new Nether\Object\Datastore;
-
-		$Config->BlendRight([
-
-		]);
-
-		return $Config;
-	}
 
 
 }

@@ -3,6 +3,7 @@
 namespace Nether\User;
 use Nether;
 
+use Nether\User\Library;
 use Nether\Common\Datafilters;
 
 class EntitySession
@@ -36,10 +37,13 @@ extends Entity {
 	TransmitSession():
 	static {
 
+		$SessionName = Library::$Config[Library::ConfSessionName];
+
 		setcookie(
-			'nuser',
+			$SessionName,
 			$this->GenerateSessionData(),
-			strtotime('+15 days')
+			strtotime('+15 days'),
+			'/'
 		);
 
 		return $this;
@@ -49,9 +53,13 @@ extends Entity {
 	DestroySession():
 	static {
 
+		$SessionName = Library::$Config[Library::ConfSessionName];
+
 		setcookie(
-			'nuser', '',
-			strtotime('-69 days')
+			$SessionName,
+			'',
+			strtotime('-69 days'),
+			'/'
 		);
 
 		return $this;
@@ -68,12 +76,14 @@ extends Entity {
 	Get():
 	?static {
 
-		if(!isset($_COOKIE['nuser']))
+		$SessionName = Library::$Config[Library::ConfSessionName];
+
+		if(!isset($_COOKIE[$SessionName]))
 		return NULL;
 
 		////////
 
-		$Data = Struct\SessionData::Decode($_COOKIE['nuser']);
+		$Data = Struct\SessionData::Decode($_COOKIE[$SessionName]);
 
 		if(!$Data || !$Data->UserID)
 		return NULL;
@@ -85,8 +95,18 @@ extends Entity {
 		if(!$User)
 		return NULL;
 
+		if($User->TimeBanned)
+		return NULL;
+
 		if(!$User->ValidateSessionHash($Data->UserHash))
 		return NULL;
+
+		////////
+
+		if($User->HasItBeenSinceSeen())
+		$User->UpdateTimeSeen();
+
+		////////
 
 		return $User;
 	}
