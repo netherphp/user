@@ -1,9 +1,11 @@
 <?php
 
 namespace Nether\User\Routes;
+use Nether;
 
 use Nether\Atlantis\Routes\Api;
 use Nether\Avenue\Meta\RouteHandler;
+use Nether\Common\Datafilters;
 
 class UserSessionAPI
 extends Api {
@@ -13,9 +15,40 @@ extends Api {
 	HandleLogin():
 	void {
 
-		echo $this->App->Router->GetSource();
+		($this->Request->Data)
+		->Username(Datafilters::TrimmedTextNullable(...))
+		->Password(Datafilters::TypeStringNullable(...));
 
-		$this->SetMessage('TODO');
+		////////
+
+		if(!$this->Request->Data->Username)
+		$this->Quit(1, 'missing Username field');
+
+		if(!$this->Request->Data->Password)
+		$this->Quit(2, 'missing Password field');
+
+		////////
+
+		$User = Nether\User\EntitySession::GetByAlias(
+			$this->Request->Data->Username
+		);
+
+		if(!$User)
+		$this->Quit(3, 'user not found');
+
+		if(!$User->ValidatePassword($this->Request->Data->Password))
+		$this->Quit(4, 'invalid password');
+
+		////////
+
+		$User->TransmitSession();
+
+		$this
+		->SetPayload([
+			'ID'    => $User->ID,
+			'Alias' => $User->Alias,
+			'CData' => $User->GenerateSessionData()
+		]);
 
 		return;
 	}
@@ -25,7 +58,37 @@ extends Api {
 	HandleLogout():
 	void {
 
-		$this->SetMessage('TODO');
+		$User = Nether\User\EntitySession::Get();
+		$Payload = [ 'ID' => NULL, 'Alias' => NULL, 'CData' => NULL ];
+
+		if($User) {
+			$User->DestroySession();
+			$Payload['ID'] = $User->ID;
+			$Payload['Alias'] = $User->Alias;
+		}
+
+		$this
+		->SetPayload($Payload);
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/session/status')]
+	public function
+	HandleStatus():
+	void {
+
+		$User = Nether\User\EntitySession::Get();
+		$Payload = [ 'ID' => NULL, 'Alias' => NULL, 'CData' => NULL ];
+
+		if($User) {
+			$Payload['ID'] = $User->ID;
+			$Payload['Alias'] = $User->Alias;
+			$Payload['CData'] = $User->GenerateSessionData();
+		}
+
+		$this
+		->SetPayload($Payload);
 
 		return;
 	}

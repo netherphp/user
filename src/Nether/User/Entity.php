@@ -102,7 +102,7 @@ implements Stringable {
 	static {
 
 		$this->Update([
-			'PSand' => static::GetPocketSand()
+			'PSand' => static::GeneratePocketSand()
 		]);
 
 		return $this;
@@ -120,6 +120,16 @@ implements Stringable {
 		]);
 
 		return $this;
+	}
+
+	public function
+	ValidatePassword(string $Password):
+	bool {
+
+		if($this->PHash === NULL)
+		return FALSE;
+
+		return password_verify($Password, $this->PHash);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -143,7 +153,7 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	GetPocketSand():
+	GeneratePocketSand():
 	string {
 
 		return hash('sha512', random_bytes(128));
@@ -159,7 +169,7 @@ implements Stringable {
 		$Dataset = new Datastore([
 			'TimeCreated' => time(),
 			'PHash'       => NULL,
-			'PSand'       => static::GetPocketSand()
+			'PSand'       => static::GeneratePocketSand()
 		]);
 
 		$Dataset->MergeRight($Input);
