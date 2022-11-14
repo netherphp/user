@@ -10,7 +10,7 @@ use Nether\Common\Datafilters;
 class UserSessionAPI
 extends Api {
 
-	#[RouteHandler('/api/user/session/login')]
+	#[RouteHandler('/api/user/session/login', Verb: 'POST')]
 	public function
 	HandleLogin():
 	void {
@@ -57,7 +57,7 @@ extends Api {
 		return;
 	}
 
-	#[RouteHandler('/api/user/session/logout')]
+	#[RouteHandler('/api/user/session/logout', Verb: 'POST')]
 	public function
 	HandleLogout():
 	void {

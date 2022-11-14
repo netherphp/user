@@ -4,22 +4,33 @@ namespace Nether\User;
 use Nether;
 
 use Nether\Common\Values;
+use Nether\Object\Datastore;
 
 class Library
 extends Nether\Common\Library {
 
 	const
+	ConfEnable          = 'Nether.User.Enable',
 	ConfUpdateSeenAfter = 'Nether.User.SeenUpdateAfter',
 	ConfSessionName     = 'Nether.User.SessionName',
 	ConfSessionExpire   = 'Nether.User.SessionExpire';
 
 	static public function
-	PrepareDefaultConfig(?Nether\Object\Datastore $Config=NULL):
+	Init(...$Argv):
+	void {
+
+		static::OnInit(...$Argv);
+		return;
+	}
+
+	static public function
+	InitDefaultConfig(?Nether\Object\Datastore $Config=NULL):
 	Nether\Object\Datastore {
 
-		parent::PrepareDefaultConfig($Config);
+		parent::InitDefaultConfig($Config);
 
 		$Config->BlendRight([
+			static::ConfEnable          => TRUE,
 			static::ConfUpdateSeenAfter => Values::SecPerMin,
 			static::ConfSessionName     => 'NetherUserSession',
 			static::ConfSessionExpire   => (Values::SecPerDay * 12)
@@ -31,11 +42,14 @@ extends Nether\Common\Library {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
-	Init(Nether\Object\Datastore $Config, ...$Argv):
+	static protected function
+	OnInit(Datastore $Config, ...$Argv):
 	void {
 
-		static::$Config = static::PrepareDefaultConfig($Config);
+		static::InitDefaultConfig($Config);
+
+		if(!$Config[self::ConfEnable])
+		return;
 
 		// optional: register urls with atlantis.
 		// this stack is making use of some oldschool php fuckery where it
@@ -47,13 +61,16 @@ extends Nether\Common\Library {
 		if(isset($Argv['App']) && is_object($Argv['App']))
 		if(method_exists($Argv['App'], 'GetProjectEnv'))
 		if($Argv['App'] instanceof Nether\Atlantis\Engine)
-		static::InitWithAtlantisEngine($Argv['App']);
+		static::RegisterWithAtlantis($Argv['App']);
 
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static protected function
-	InitWithAtlantisEngine(Nether\Atlantis\Engine $App):
+	RegisterWithAtlantis(Nether\Atlantis\Engine $App):
 	void {
 
 		// register some data with the framework.
@@ -82,8 +99,5 @@ extends Nether\Common\Library {
 
 		return;
 	}
-
-
-
 
 }
