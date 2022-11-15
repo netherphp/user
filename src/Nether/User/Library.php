@@ -13,7 +13,9 @@ extends Nether\Common\Library {
 	ConfEnable          = 'Nether.User.Enable',
 	ConfUpdateSeenAfter = 'Nether.User.SeenUpdateAfter',
 	ConfSessionName     = 'Nether.User.SessionName',
-	ConfSessionExpire   = 'Nether.User.SessionExpire';
+	ConfSessionExpire   = 'Nether.User.SessionExpire',
+	ConfGithubID        = 'Nether.User.Github.ClientID',
+	ConfGIthubSecret    = 'Nether.User.Github.ClientSecret';
 
 	static public function
 	Init(...$Argv):

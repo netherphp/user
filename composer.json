@@ -3,6 +3,7 @@
 	"description": "Provides a basic user login system.",
 	"keywords": [ "php", "user" ],
 	"license": "BSD-2-Clause",
+	"minimum-stability": "dev",
 	"authors":[
 		{
 			"name": "Bob Majdak Jr",
@@ -24,7 +25,8 @@
 	"require": {
 		"php": "^8.1",
 		"netherphp/database": "dev-redux",
-		"netherphp/common": "dev-master"
+		"netherphp/common": "dev-master",
+		"league/oauth2-github": "^3.1"
 	},
 	"require-dev": {
 		"netherphp/standards": ">=0.1.9",

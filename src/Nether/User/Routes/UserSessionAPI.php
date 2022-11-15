@@ -2,7 +2,9 @@
 
 namespace Nether\User\Routes;
 use Nether;
+use League;
 
+use Nether\User\Library;
 use Nether\Atlantis\Routes\Api;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Common\Datafilters;
@@ -93,6 +95,22 @@ extends Api {
 
 		$this
 		->SetPayload($Payload);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[RouteHandler('/api/user/session/github')]
+	public function
+	HandleGithub():
+	void {
+
+		$Client = new League\OAuth2\Client\Provider\Github([
+			'clientId'     => Nether\Option::Get('Atlantis.Auth.Github.ClientID'),
+			'clientSecret' => Nether\Option::Get('Atlantis.Auth.Github.ClientSecret')
+		]);
 
 		return;
 	}
