@@ -58,6 +58,11 @@ implements Stringable {
 	public ?string
 	$AuthGoogleID;
 
+	#[Nether\Database\Meta\TypeChar(Size: 64)]
+	#[Nether\Database\Meta\FieldIndex]
+	public ?string
+	$AuthGitHubID;
+
 	#[Nether\Database\Meta\TypeChar(Size: 255)]
 	public ?string
 	$PHash;
@@ -182,6 +187,42 @@ implements Stringable {
 	?static {
 
 		return static::GetByField('Email', $Email);
+	}
+
+	static public function
+	GetByGitHubID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthGitHubID', $AuthID);
+	}
+
+	static public function
+	GetByGitHubEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthGitHubID && ($User->AuthGitHubID !== $AuthID))
+		throw new Error\GitHubAuthMismatch;
+
+		return $User;
+	}
+
+	static public function
+	GetByAppleID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthAppleID', $AuthID);
+	}
+
+	static public function
+	GetByGoogleID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthGoogleID', $AuthID);
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -14,8 +14,15 @@ extends Nether\Common\Library {
 	ConfUpdateSeenAfter = 'Nether.User.SeenUpdateAfter',
 	ConfSessionName     = 'Nether.User.SessionName',
 	ConfSessionExpire   = 'Nether.User.SessionExpire',
-	ConfGithubID        = 'Nether.User.Github.ClientID',
-	ConfGIthubSecret    = 'Nether.User.Github.ClientSecret';
+	ConfGitHubEnabled   = 'Nether.User.GitHub.Enabled',
+	ConfGitHubNewUsers  = 'Nether.User.GitHub.NewUsers',
+	ConfGitHubID        = 'Nether.User.GitHub.ClientID',
+	ConfGitHubSecret    = 'Nether.User.GitHub.ClientSecret',
+	ConfTwitterEnabled  = 'Nether.User.Twitter.Enabled',
+	ConfTwitterNewUsers = 'Nether.User.Twitter.NewUsers',
+	ConfTwitterID       = 'Nether.User.Twitter.ClientID',
+	ConfTwitterSecret   = 'Nether.User.Twitter.ClientSecret',
+	ConfTwitterToken    = 'Nether.User.Twitter.ClientToken';
 
 	static public function
 	Init(...$Argv):
@@ -35,7 +42,12 @@ extends Nether\Common\Library {
 			static::ConfEnable          => TRUE,
 			static::ConfUpdateSeenAfter => Values::SecPerMin,
 			static::ConfSessionName     => 'NetherUserSession',
-			static::ConfSessionExpire   => (Values::SecPerDay * 12)
+			static::ConfSessionExpire   => (Values::SecPerDay * 12),
+
+			static::ConfGitHubEnabled   => TRUE,
+			static::ConfGitHubNewUsers  => TRUE,
+			static::ConfTwitterEnabled  => TRUE,
+			static::ConfTwitterNewUsers => TRUE
 		]);
 
 		return $Config;
@@ -100,6 +112,33 @@ extends Nether\Common\Library {
 		}
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	IsGitHubEnabled():
+	bool {
+
+		return (
+			TRUE
+			&& static::$Config[static::ConfGitHubEnabled]
+			&& static::$Config[static::ConfGitHubID]
+			&& static::$Config[static::ConfGitHubSecret]
+		);
+	}
+
+	static public function
+	IsTwitterEnabled():
+	bool {
+
+		return (
+			TRUE
+			&& static::$Config[static::ConfTwitterEnabled]
+			&& static::$Config[static::ConfTwitterID]
+			&& static::$Config[static::ConfTwitterSecret]
+		);
 	}
 
 }

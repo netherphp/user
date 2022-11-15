@@ -102,17 +102,6 @@ extends Api {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[RouteHandler('/api/user/session/github')]
-	public function
-	HandleGithub():
-	void {
 
-		$Client = new League\OAuth2\Client\Provider\Github([
-			'clientId'     => Nether\Option::Get('Atlantis.Auth.Github.ClientID'),
-			'clientSecret' => Nether\Option::Get('Atlantis.Auth.Github.ClientSecret')
-		]);
-
-		return;
-	}
 
 }
