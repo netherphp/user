@@ -6,15 +6,16 @@ use League;
 
 use Throwable;
 use Nether\User\Library;
-use Nether\Atlantis\Routes\Web;
+use Nether\Atlantis\Routes\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Object\Datastore;
+use Nether\Common\Datafilters;
 
 use League\OAuth2\Client\Provider\Github as GitHubProvider;
 use League\OAuth2\Client\Token\AccessToken;
 
 class UserSessionWeb
-extends Web {
+extends PublicWeb {
 
 	#[RouteHandler('/login')]
 	public function
@@ -46,10 +47,15 @@ extends Web {
 	HandleGitHub():
 	void {
 
+		($this->Request->Query)
+		->Code(Datafilters::TrimmedTextNullable(...))
+		->Goto(Datafilters::Base64Decode(...));
+
 		$AllowNewUsers = Library::Get(Library::ConfGitHubNewUsers);
 		$ClientID = Library::Get(Library::ConfGitHubID);
 		$ClientSecret = Library::Get(Library::ConfGitHubSecret);
 
+		$Goto = $this->Request->Query->Goto;
 		$AuthCode = $this->Request->Query->Code;
 		$Token = NULL;
 		$User = NULL;
@@ -70,11 +76,15 @@ extends Web {
 			'clientSecret' => $ClientSecret
 		]);
 
-		if(!$AuthCode)
-		$this->Goto($Client->GetAuthorizationUrl([
-			'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
-			'scope' => [ 'user:email' ]
-		]));
+		if(!$AuthCode) {
+			if($Goto)
+			$_SESSION['Nether.Atlantis.Login.Goto'] = $Goto;
+
+			$this->Goto($Client->GetAuthorizationUrl([
+				'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
+				'scope' => [ 'user:email' ]
+			]));
+		}
 
 		////////
 
@@ -135,9 +145,23 @@ extends Web {
 
 		////////
 
-		$User->Update([ 'AuthGitHubID'=> $Info->AuthID ]);
+		$User->Update([
+			'AuthGitHubID' => $Info->AuthID,
+			'TimeSeen'     => time()
+		]);
+
 		$User->TransmitSession();
-		$this->Goto('/');
+
+		////////
+
+		$Goto = '/';
+
+		if(isset($_SESSION['Nether.Atlantis.Login.Goto'])) {
+			$Goto = $_SESSION['Nether.Atlantis.Login.Goto'];
+			unset($_SESSION['Nether.Atlantis.Login.Goto']);
+		}
+
+		$this->Goto($Goto);
 
 		return;
 	}

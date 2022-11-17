@@ -5,6 +5,8 @@
 	return;
 })();
 
+use Nether\User\EntityAccessType;
+
 class App
 extends Nether\Console\Client {
 
@@ -375,6 +377,64 @@ extends Nether\Console\Client {
 			date('Y-m-d', $User->TimeBanned),
 			$Timeframe->GetSuffixedString(Ago: 'ago')
 		);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('access')]
+	#[Nether\Console\Meta\Info('Manage user access types.')]
+	#[Nether\Console\Meta\Arg('id/alias/email', 'User ID, Alias, or Email')]
+	#[Nether\Console\Meta\Value('--set', 'Access Type Key to set. Requires --type and --value to also be set.')]
+	#[Nether\Console\Meta\Value('--drop', 'Access Type Key to drop.')]
+	#[Nether\Console\Meta\Error(1, 'user not found')]
+	public function
+	HandleUserAccess():
+	int {
+
+		$Lookup = $this->GetInput(1);
+		$User = $this->LookupUserBy($Lookup);
+		$F = $this->Formatter;
+
+		if(!$User)
+		$this->Quit(1);
+
+		////////
+
+		if($this->HasOption('Set')) {
+			$AKey = $this->GetOption('Set');
+			$AValue = $this->GetOption('Value') ?: 1;
+
+			if($AKey && $AValue)
+			EntityAccessType::Insert([
+				'EntityID' => $User->ID,
+				'Key'      => $AKey,
+				'Value'    => $AValue
+			]);
+		}
+
+		if($this->HasOption('Drop')) {
+			$AKey = $this->GetOption('drop');
+
+			if($AKey)
+			EntityAccessType::DropByEntityKey($User->ID, $AKey);
+		}
+
+		////////
+
+		static::PrintLn(sprintf(
+			'%s %s',
+			$F->YellowBold('User:'),
+			$F->Yellow((string)$User)
+		));
+
+		$List = $User->GetAccessTypes();
+		foreach($List as $Key => $Type) {
+			static::PrintLn(sprintf(
+				'Key: %s, Value: %d',
+				$Key,
+				$Type->Value
+			));
+		}
 
 		return 0;
 	}

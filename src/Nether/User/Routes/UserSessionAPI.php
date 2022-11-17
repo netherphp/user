@@ -12,6 +12,7 @@ use Nether\Common\Datafilters;
 class UserSessionAPI
 extends Api {
 
+	#[RouteHandler('/api/user/session', Verb: 'LOGIN')]
 	#[RouteHandler('/api/user/session/login', Verb: 'POST')]
 	public function
 	HandleLogin():
@@ -19,15 +20,18 @@ extends Api {
 
 		($this->Request->Data)
 		->Username(Datafilters::TrimmedTextNullable(...))
-		->Password(Datafilters::TypeStringNullable(...));
+		->Password(Datafilters::TypeStringNullable(...))
+		->Goto(Datafilters::Base64Decode(...));
+
+		var_dump($this->Request->Data);
 
 		////////
 
 		if(!$this->Request->Data->Username)
-		$this->Quit(1, 'missing Username field');
+		$this->Quit(1, 'Missing Field: Username');
 
 		if(!$this->Request->Data->Password)
-		$this->Quit(2, 'missing Password field');
+		$this->Quit(2, 'Missing Field: Password');
 
 		////////
 
@@ -36,13 +40,13 @@ extends Api {
 		);
 
 		if(!$User)
-		$this->Quit(3, 'user not found');
+		$this->Quit(3, 'Invalid credentials');
 
 		if(!$User->ValidatePassword($this->Request->Data->Password))
-		$this->Quit(4, 'invalid password');
+		$this->Quit(4, 'Invalid credentials');
 
 		if($User->TimeBanned)
-		$this->Quit(5, 'account is banned');
+		$this->Quit(5, 'Account is banned');
 
 		////////
 
@@ -50,6 +54,7 @@ extends Api {
 		$User->UpdateTimeSeen();
 
 		$this
+		->SetGoto($this->Request->Data->Goto ?: NULL)
 		->SetPayload([
 			'ID'    => $User->ID,
 			'Alias' => $User->Alias,
@@ -59,6 +64,7 @@ extends Api {
 		return;
 	}
 
+	#[RouteHandler('/api/user/session', Verb: 'LOGOUT')]
 	#[RouteHandler('/api/user/session/logout', Verb: 'POST')]
 	public function
 	HandleLogout():
@@ -79,6 +85,7 @@ extends Api {
 		return;
 	}
 
+	#[RouteHandler('/api/user/session', Verb: 'STATUS')]
 	#[RouteHandler('/api/user/session/status')]
 	public function
 	HandleStatus():
@@ -98,10 +105,5 @@ extends Api {
 
 		return;
 	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-
 
 }

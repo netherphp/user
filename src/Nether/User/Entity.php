@@ -85,6 +85,27 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetAccessTypes():
+	Datastore {
+
+		$Output = new Datastore;
+		$Val = NULL;
+
+		////////
+
+		$Result = Nether\User\EntityAccessType::Find([
+			'EntityID' => $this->ID
+		]);
+
+		foreach($Result as $Val)
+		$Output->Shove($Val->Key, $Val);
+
+		////////
+
+		return $Output;
+	}
+
+	public function
 	HasItBeenSinceSeen(?int $Diff=NULL):
 	bool {
 

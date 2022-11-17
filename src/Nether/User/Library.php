@@ -118,6 +118,13 @@ extends Nether\Common\Library {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	IsAppleEnabled():
+	bool {
+
+		return FALSE;
+	}
+
+	static public function
 	IsGitHubEnabled():
 	bool {
 
