@@ -48,6 +48,10 @@ implements Stringable {
 	public int
 	$Admin;
 
+	#[Nether\Database\Meta\TypeIntSmall(Unsigned: TRUE)]
+	public bool
+	$Activated;
+
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
 	#[Nether\Database\Meta\FieldIndex]
 	public ?string
@@ -131,7 +135,7 @@ implements Stringable {
 	static {
 
 		$this->Update([
-			'PHash' => password_hash($Password, PASSWORD_DEFAULT)
+			'PHash' => static::GeneratePasswordHash($Password)
 		]);
 
 		return $this;
@@ -197,6 +201,20 @@ implements Stringable {
 	}
 
 	static public function
+	GetBy(int|string $Input):
+	?static {
+
+		if(is_string($Input)) {
+			if(str_contains($Input, '@'))
+			return static::GetByEmail($Input);
+			else
+			return static::GetByAlias($Input);
+		}
+
+		return static::GetByID((int)$Input);
+	}
+
+	static public function
 	GetByAlias(string $Alias):
 	?static {
 
@@ -250,6 +268,13 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	GeneratePasswordHash(string $Password):
+	string {
+
+		return password_hash($Password, PASSWORD_DEFAULT);
+	}
+
+	static public function
 	GeneratePocketSand():
 	string {
 
@@ -266,7 +291,8 @@ implements Stringable {
 		$Dataset = new Datastore([
 			'TimeCreated' => time(),
 			'PHash'       => NULL,
-			'PSand'       => static::GeneratePocketSand()
+			'PSand'       => static::GeneratePocketSand(),
+			'Activated'   => 0
 		]);
 
 		$Dataset->MergeRight($Input);
