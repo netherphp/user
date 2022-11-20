@@ -16,6 +16,9 @@ extends Nether\Common\Library {
 	ConfSessionName        = 'Nether.User.SessionName',
 	ConfSessionExpire      = 'Nether.User.SessionExpire';
 
+	////////////////////////////////////////////////////////////////
+	// configuration keys for apple signin /////////////////////////
+
 	const
 	ConfAppleEnabled       = 'Nether.User.Apple.Enabled',
 	ConfAppleNewUsers      = 'Nether.User.Apple.NewUsers',
@@ -24,20 +27,26 @@ extends Nether\Common\Library {
 	ConfAppleKeyFileID     = 'Nether.User.Apple.KeyFileID',
 	ConfAppleKeyFilePath   = 'Nether.User.Apple.KeyFilePath';
 
+	////////////////////////////////////////////////////////////////
+	// configuration keys for github signin ////////////////////////
+
 	const
 	ConfGitHubEnabled      = 'Nether.User.GitHub.Enabled',
 	ConfGitHubNewUsers     = 'Nether.User.GitHub.NewUsers',
 	ConfGitHubID           = 'Nether.User.GitHub.ClientID',
-	ConfGitHubSecret       = 'Nether.User.GitHub.ClientSecret',
+	ConfGitHubSecret       = 'Nether.User.GitHub.ClientSecret';
+
+	////////////////////////////////////////////////////////////////
+	// configuration keys for google signin ////////////////////////
+
+	const
 	ConfGoogleEnabled      = 'Nether.User.Google.Enabled',
 	ConfGoogleNewUsers     = 'Nether.User.Google.NewUsers',
 	ConfGoogleID           = 'Nether.User.Google.ClientID',
-	ConfGoogleSecret       = 'Nether.User.Google.ClientSecret',
-	ConfTwitterEnabled     = 'Nether.User.Twitter.Enabled',
-	ConfTwitterNewUsers    = 'Nether.User.Twitter.NewUsers',
-	ConfTwitterID          = 'Nether.User.Twitter.ClientID',
-	ConfTwitterSecret      = 'Nether.User.Twitter.ClientSecret',
-	ConfTwitterToken       = 'Nether.User.Twitter.ClientToken';
+	ConfGoogleSecret       = 'Nether.User.Google.ClientSecret';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static public function
 	Init(...$Argv):
@@ -67,10 +76,7 @@ extends Nether\Common\Library {
 			static::ConfGitHubNewUsers  => TRUE,
 
 			static::ConfGoogleEnabled   => TRUE,
-			static::ConfGoogleNewUsers  => TRUE,
-
-			static::ConfTwitterEnabled  => TRUE,
-			static::ConfTwitterNewUsers => TRUE
+			static::ConfGoogleNewUsers  => TRUE
 		]);
 
 		return $Config;
@@ -126,18 +132,6 @@ extends Nether\Common\Library {
 			&& static::$Config[static::ConfGoogleEnabled]
 			&& static::$Config[static::ConfGoogleID]
 			&& static::$Config[static::ConfGoogleSecret]
-		);
-	}
-
-	static public function
-	IsTwitterEnabled():
-	bool {
-
-		return (
-			TRUE
-			&& static::$Config[static::ConfTwitterEnabled]
-			&& static::$Config[static::ConfTwitterID]
-			&& static::$Config[static::ConfTwitterSecret]
 		);
 	}
 

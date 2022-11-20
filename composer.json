@@ -28,7 +28,8 @@
 		"netherphp/common": "dev-master",
 		"league/oauth2-github": "^3.1",
 		"league/oauth2-google": "dev-main",
-		"patrickbussmann/oauth2-apple": "dev-main"
+		"patrickbussmann/oauth2-apple": "dev-main",
+		"wohali/oauth2-discord-new": "^1.2"
 	},
 	"require-dev": {
 		"netherphp/standards": ">=0.1.9",
