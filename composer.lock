@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6b87c0f2611355c7b7d00a18bc37b9ee",
+    "content-hash": "cac50c609d48ea0e200a6978f8196d7c",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -475,6 +475,62 @@
                 "source": "https://github.com/thephpleague/oauth2-github/tree/3.1.0"
             },
             "time": "2022-11-04T14:01:49+00:00"
+        },
+        {
+            "name": "league/oauth2-google",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth2-google.git",
+                "reference": "002fa6af4c8684d6d76c0ea2fa10ce608ba7e4b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-google/zipball/002fa6af4c8684d6d76c0ea2fa10ce608ba7e4b4",
+                "reference": "002fa6af4c8684d6d76c0ea2fa10ce608ba7e4b4",
+                "shasum": ""
+            },
+            "require": {
+                "league/oauth2-client": "^2.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "eloquent/phony-phpunit": "^6.0 || ^7.1",
+                "phpunit/phpunit": "^8.0 || ^9.0",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth2\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Woody Gilk",
+                    "email": "hello@shadowhand.com",
+                    "homepage": "https://shadowhand.com"
+                }
+            ],
+            "description": "Google OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+            "keywords": [
+                "Authentication",
+                "authorization",
+                "client",
+                "google",
+                "oauth",
+                "oauth2"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/oauth2-google/issues",
+                "source": "https://github.com/thephpleague/oauth2-google/tree/main"
+            },
+            "time": "2022-04-15T16:27:54+00:00"
         },
         {
             "name": "netherphp/common",
@@ -2950,7 +3006,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "netherphp/database": 20,
-        "netherphp/common": 20
+        "netherphp/common": 20,
+        "league/oauth2-google": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

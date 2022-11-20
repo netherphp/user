@@ -19,6 +19,10 @@ extends Nether\Common\Library {
 	ConfGitHubNewUsers     = 'Nether.User.GitHub.NewUsers',
 	ConfGitHubID           = 'Nether.User.GitHub.ClientID',
 	ConfGitHubSecret       = 'Nether.User.GitHub.ClientSecret',
+	ConfGoogleEnabled      = 'Nether.User.Google.Enabled',
+	ConfGoogleNewUsers     = 'Nether.User.Google.NewUsers',
+	ConfGoogleID           = 'Nether.User.Google.ClientID',
+	ConfGoogleSecret       = 'Nether.User.Google.ClientSecret',
 	ConfTwitterEnabled     = 'Nether.User.Twitter.Enabled',
 	ConfTwitterNewUsers    = 'Nether.User.Twitter.NewUsers',
 	ConfTwitterID          = 'Nether.User.Twitter.ClientID',
@@ -48,6 +52,8 @@ extends Nether\Common\Library {
 
 			static::ConfGitHubEnabled   => TRUE,
 			static::ConfGitHubNewUsers  => TRUE,
+			static::ConfGoogleEnabled   => TRUE,
+			static::ConfGoogleNewUsers  => TRUE,
 			static::ConfTwitterEnabled  => TRUE,
 			static::ConfTwitterNewUsers => TRUE
 		]);
@@ -86,6 +92,18 @@ extends Nether\Common\Library {
 			&& static::$Config[static::ConfGitHubEnabled]
 			&& static::$Config[static::ConfGitHubID]
 			&& static::$Config[static::ConfGitHubSecret]
+		);
+	}
+
+	static public function
+	IsGoogleEnabled():
+	bool {
+
+		return (
+			TRUE
+			&& static::$Config[static::ConfGoogleEnabled]
+			&& static::$Config[static::ConfGoogleID]
+			&& static::$Config[static::ConfGoogleSecret]
 		);
 	}
 
