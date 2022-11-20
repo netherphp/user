@@ -14,11 +14,17 @@ extends Nether\Common\Library {
 	ConfUpdateSeenAfter    = 'Nether.User.SeenUpdateAfter',
 	ConfConfirmEmailChange = 'Nether.User.ConfirmEmailChange',
 	ConfSessionName        = 'Nether.User.SessionName',
-	ConfSessionExpire      = 'Nether.User.SessionExpire',
+	ConfSessionExpire      = 'Nether.User.SessionExpire';
+
+	const
 	ConfAppleEnabled       = 'Nether.User.Apple.Enabled',
 	ConfAppleNewUsers      = 'Nether.User.Apple.NewUsers',
 	ConfAppleID            = 'Nether.User.Apple.ClientID',
-	ConfAppleSecret        = 'Nether.User.Apple.ClientSecret',
+	ConfAppleTeamID        = 'Nether.User.Apple.TeamID',
+	ConfAppleKeyFileID     = 'Nether.User.Apple.KeyFileID',
+	ConfAppleKeyFilePath   = 'Nether.User.Apple.KeyFilePath';
+
+	const
 	ConfGitHubEnabled      = 'Nether.User.GitHub.Enabled',
 	ConfGitHubNewUsers     = 'Nether.User.GitHub.NewUsers',
 	ConfGitHubID           = 'Nether.User.GitHub.ClientID',
@@ -56,10 +62,13 @@ extends Nether\Common\Library {
 
 			static::ConfAppleEnabled    => TRUE,
 			static::ConfAppleNewUsers   => TRUE,
+
 			static::ConfGitHubEnabled   => TRUE,
 			static::ConfGitHubNewUsers  => TRUE,
+
 			static::ConfGoogleEnabled   => TRUE,
 			static::ConfGoogleNewUsers  => TRUE,
+
 			static::ConfTwitterEnabled  => TRUE,
 			static::ConfTwitterNewUsers => TRUE
 		]);
@@ -86,7 +95,14 @@ extends Nether\Common\Library {
 	IsAppleEnabled():
 	bool {
 
-		return FALSE;
+		return (
+			TRUE
+			&& static::$Config[static::ConfAppleEnabled]
+			&& static::$Config[static::ConfAppleID]
+			&& static::$Config[static::ConfAppleTeamID]
+			&& static::$Config[static::ConfAppleKeyFileID]
+			&& static::$Config[static::ConfAppleKeyFilePath]
+		);
 	}
 
 	static public function

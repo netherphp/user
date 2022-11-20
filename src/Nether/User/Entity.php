@@ -19,9 +19,9 @@ implements Stringable {
 	public int
 	$ID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 24, Nullable: FALSE, Variable: TRUE)]
+	#[Nether\Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
 	#[Nether\Database\Meta\FieldIndex]
-	public string
+	public ?string
 	$Alias;
 
 	#[Nether\Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
@@ -245,7 +245,7 @@ implements Stringable {
 		return NULL;
 
 		if($User->AuthGitHubID && ($User->AuthGitHubID !== $AuthID))
-		throw new Error\GitHubAuthMismatch;
+		throw new Error\AuthMismatch;
 
 		return $User;
 	}
@@ -255,6 +255,21 @@ implements Stringable {
 	?static {
 
 		return static::GetByField('AuthAppleID', $AuthID);
+	}
+
+	static public function
+	GetByAppleEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthAppleID && ($User->AuthAppleID !== $AuthID))
+		throw new Error\AuthMismatch;
+
+		return $User;
 	}
 
 	static public function
@@ -274,7 +289,7 @@ implements Stringable {
 		return NULL;
 
 		if($User->AuthGoogleID && ($User->AuthGoogleID !== $AuthID))
-		throw new Error\GoogleAuthMismatch;
+		throw new Error\AuthMismatch;
 
 		return $User;
 	}
