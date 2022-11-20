@@ -264,6 +264,21 @@ implements Stringable {
 		return static::GetByField('AuthGoogleID', $AuthID);
 	}
 
+	static public function
+	GetByGoogleEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthGoogleID && ($User->AuthGoogleID !== $AuthID))
+		throw new Error\GoogleAuthMismatch;
+
+		return $User;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
