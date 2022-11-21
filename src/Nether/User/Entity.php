@@ -60,6 +60,11 @@ implements Stringable {
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
 	#[Nether\Database\Meta\FieldIndex]
 	public ?string
+	$AuthDiscordID;
+
+	#[Nether\Database\Meta\TypeChar(Size: 64)]
+	#[Nether\Database\Meta\FieldIndex]
+	public ?string
 	$AuthGoogleID;
 
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
@@ -267,6 +272,28 @@ implements Stringable {
 		return NULL;
 
 		if($User->AuthAppleID && ($User->AuthAppleID !== $AuthID))
+		throw new Error\AuthMismatch;
+
+		return $User;
+	}
+
+	static public function
+	GetByDiscordID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthDiscordID', $AuthID);
+	}
+
+	static public function
+	GetByDiscordEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthDiscordID && ($User->AuthDiscordID !== $AuthID))
 		throw new Error\AuthMismatch;
 
 		return $User;

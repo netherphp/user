@@ -37,7 +37,7 @@ extends Nether\Console\Client {
 		$Lookup = $this->GetInput(1);
 		$Format = $this->GetOption('Format') ?: 'json';
 		$Full = $this->GetOption('Full') ?: FALSE;
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 
 		if(!$User)
 		$this->Quit(1);
@@ -100,6 +100,7 @@ extends Nether\Console\Client {
 	#[Nether\Console\Meta\Command('update')]
 	#[Nether\Console\Meta\Info('Update information for a user.')]
 	#[Nether\Console\Meta\Arg('id/alias', 'Username / User Alias')]
+	#[Nether\Console\Meta\Value('--DbField', 'A Database Field. All uppercase NULL will convert to literal DB NULL.')]
 	#[Nether\Console\Meta\Error(1, 'user not found')]
 	public function
 	HandleUserUpdate():
@@ -107,7 +108,7 @@ extends Nether\Console\Client {
 
 		$Table = Nether\User\Entity::GetTableInfo();
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 		$Dataset = [];
 		$Key = NULL;
 
@@ -117,8 +118,14 @@ extends Nether\Console\Client {
 		////////
 
 		foreach(array_keys($Table->Fields) as $Key)
-		if($this->HasOption($Key))
-		$Dataset[$Key] = $this->GetOption($Key);
+		if($this->HasOption($Key)) {
+			$Val = $this->GetOption($Key);
+
+			$Dataset[$Key] = match($Val) {
+				'NULL'  => NULL,
+				default => $Val
+			};
+		}
 
 		////////
 
@@ -138,7 +145,7 @@ extends Nether\Console\Client {
 	int {
 
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 
 		if(!$User)
 		$this->Quit(1);
@@ -214,7 +221,7 @@ extends Nether\Console\Client {
 	int {
 
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 
 		if(!$User)
 		$this->Quit(1);
@@ -237,7 +244,7 @@ extends Nether\Console\Client {
 
 		$Lookup = $this->GetInput(1);
 		$Disable = $this->GetOption('Disable');
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 
 		////////
 
@@ -280,7 +287,7 @@ extends Nether\Console\Client {
 	int {
 
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 		$TimeToSet = NULL;
 
 		////////
@@ -332,7 +339,7 @@ extends Nether\Console\Client {
 	int {
 
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 		$TimeToSet = NULL;
 
 		////////
@@ -392,7 +399,7 @@ extends Nether\Console\Client {
 	int {
 
 		$Lookup = $this->GetInput(1);
-		$User = $this->LookupUserBy($Lookup);
+		$User = Nether\User\Entity::GetBy($Lookup);
 		$F = $this->Formatter;
 
 		if(!$User)

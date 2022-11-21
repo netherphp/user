@@ -28,6 +28,15 @@ extends Nether\Common\Library {
 	ConfAppleKeyFilePath   = 'Nether.User.Apple.KeyFilePath';
 
 	////////////////////////////////////////////////////////////////
+	// configuration keys for discord signin ///////////////////////
+
+	const
+	ConfDiscordEnabled      = 'Nether.User.Discord.Enabled',
+	ConfDiscordNewUsers     = 'Nether.User.Discord.NewUsers',
+	ConfDiscordID           = 'Nether.User.Discord.ClientID',
+	ConfDiscordSecret       = 'Nether.User.Discord.ClientSecret';
+
+	////////////////////////////////////////////////////////////////
 	// configuration keys for github signin ////////////////////////
 
 	const
@@ -76,7 +85,10 @@ extends Nether\Common\Library {
 			static::ConfGitHubNewUsers  => TRUE,
 
 			static::ConfGoogleEnabled   => TRUE,
-			static::ConfGoogleNewUsers  => TRUE
+			static::ConfGoogleNewUsers  => TRUE,
+
+			static::ConfDiscordEnabled  => TRUE,
+			static::ConfDiscordNewUsers => TRUE
 		]);
 
 		return $Config;
@@ -112,6 +124,18 @@ extends Nether\Common\Library {
 	}
 
 	static public function
+	IsDiscordEnabled():
+	bool {
+
+		return (
+			TRUE
+			&& static::$Config[static::ConfDiscordEnabled]
+			&& static::$Config[static::ConfDiscordID]
+			&& static::$Config[static::ConfDiscordSecret]
+		);
+	}
+
+	static public function
 	IsGitHubEnabled():
 	bool {
 
@@ -132,6 +156,19 @@ extends Nether\Common\Library {
 			&& static::$Config[static::ConfGoogleEnabled]
 			&& static::$Config[static::ConfGoogleID]
 			&& static::$Config[static::ConfGoogleSecret]
+		);
+	}
+
+	static public function
+	HasAnyThirdPartyAuth():
+	bool {
+
+		return (
+			FALSE
+			|| static::IsAppleEnabled()
+			|| static::IsDiscordEnabled()
+			|| static::IsGitHubEnabled()
+			|| static::IsGoogleEnabled()
 		);
 	}
 
