@@ -94,6 +94,17 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	IsAdmin(int $MinLevel=1):
+	bool {
+
+		return (
+			TRUE
+			&& $this->Admin
+			&& ($this->Admin >= $MinLevel)
+		);
+	}
+
+	public function
 	GetAccessTypes():
 	Datastore {
 
