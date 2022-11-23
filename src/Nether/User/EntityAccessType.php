@@ -25,6 +25,10 @@ extends Nether\Database\Prototype {
 	public int
 	$EntityID;
 
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	public int
+	$TimeCreated;
+
 	#[Nether\Database\Meta\TypeVarChar(Size: 16)]
 	public string
 	$Key;
@@ -61,7 +65,8 @@ extends Nether\Database\Prototype {
 	FindExtendOptions(Datastore $Input):
 	void {
 
-		$Input->EntityID ??= NULL;
+		$Input['EntityID'] ??= NULL;
+		$Input['Index'] ??= FALSE;
 
 		return;
 	}
@@ -70,10 +75,46 @@ extends Nether\Database\Prototype {
 	FindExtendFilters(Verse $SQL, Datastore $Input):
 	void {
 
-		if($Input->EntityID !== NULL)
-		$SQL->Where('Main.EntityID=:EntityID');
+		$Table = static::GetTableInfo();
+
+		if($Input['EntityID'] !== NULL)
+		$SQL->Where(sprintf(
+			'%s=:EntityID',
+			$Table->GetPrefixedField('Main', 'EntityID')
+		));
 
 		return;
+	}
+
+	static protected function
+	FindExtendSorts(Verse $SQL, Datastore $Input):
+	void {
+
+		$Table = static::GetTableInfo();
+
+		if($Input['Index'] !== NULL) {
+			$SQL
+			->Group($Table->GetPrefixedKey('Main'))
+			->Sort($Table->GetPrefixedField('Main', 'Key'), $SQL::SortAsc);
+
+			return;
+		}
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Insert(iterable $Input):
+	?static {
+
+		$Input = new Nether\Object\Prototype($Input, [
+			'TimeCreated' => time()
+		]);
+
+		return parent::Insert((array)$Input);
 	}
 
 }

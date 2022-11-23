@@ -3,82 +3,93 @@
 namespace Nether\User;
 use Nether;
 
+use Nether\Common;
+use Nether\Database;
+use Nether\User;
+
 use Exception;
 use Stringable;
-use Nether\User\Library;
-use Nether\Database\Verse;
 use Nether\Object\Datastore;
+use Nether\Object\Prototype\ConstructArgs;
+use Nether\Object\Meta\PropertyFactory;
 
-#[Nether\Database\Meta\TableClass('Users')]
+#[Database\Meta\TableClass('Users')]
 class Entity
 extends Nether\Database\Prototype
 implements Stringable {
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
-	#[Nether\Database\Meta\PrimaryKey]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Database\Meta\PrimaryKey]
 	public int
 	$ID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
+	#[Database\Meta\FieldIndex]
 	public ?string
 	$Alias;
 
-	#[Nether\Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
+	#[Database\Meta\FieldIndex]
 	public string
 	$Email;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Database\Meta\FieldIndex]
 	public int
 	$TimeCreated;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Database\Meta\FieldIndex]
 	public int
 	$TimeSeen;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Database\Meta\FieldIndex]
 	public int
 	$TimeBanned;
 
-	#[Nether\Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
+	#[Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
 	public int
 	$Admin;
 
-	#[Nether\Database\Meta\TypeIntSmall(Unsigned: TRUE)]
+	#[Database\Meta\TypeIntSmall(Unsigned: TRUE)]
 	public bool
 	$Activated;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
 	public ?string
 	$AuthAppleID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
 	public ?string
 	$AuthDiscordID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
 	public ?string
 	$AuthGoogleID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
-	#[Nether\Database\Meta\FieldIndex]
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
 	public ?string
 	$AuthGitHubID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 255)]
+	#[Database\Meta\TypeChar(Size: 255)]
 	public ?string
 	$PHash;
 
-	#[Nether\Database\Meta\TypeChar(Size: 128)]
+	#[Database\Meta\TypeChar(Size: 128)]
 	public ?string
 	$PSand;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[PropertyFactory('FromTime', 'TimeCreated')]
+	public Common\Date
+	$DateCreated;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -88,6 +99,13 @@ implements Stringable {
 	string {
 
 		return "User({$this->ID}, {$this->Alias})";
+	}
+
+	protected function
+	OnReady(ConstructArgs $Args):
+	void {
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -382,16 +400,20 @@ implements Stringable {
 		$Opt['SearchAlias'] ??= NULL;
 		$Opt['SearchEmail'] ??= NULL;
 
+		$Opt['WithAccessType'] ??= NULL;
+
 		$Opt['Sort'] ??= 'alias-az';
 
 		return;
 	}
 
 	static protected function
-	FindExtendFilters(Verse $SQL, Datastore $Opt):
+	FindExtendFilters(Database\Verse $SQL, Datastore $Opt):
 	void {
 
 		$Searches = [];
+		$TableMain = static::GetTableInfo();
+		$TableAT = EntityAccessType::GetTableInfo();
 
 		////////
 
@@ -418,11 +440,26 @@ implements Stringable {
 			$SQL->Where(join(' OR ', $Searches));
 		}
 
+		if($Opt['WithAccessType'] !== NULL) {
+			$SQL
+			->Join(sprintf(
+				'%s ON %s=%s',
+				$TableAT->GetAliasedTable('QUAT'),
+				$TableAT->GetPrefixedField('QUAT', 'EntityID'),
+				$TableMain->GetPrefixedKey('Main')
+			))
+			->Where(sprintf(
+				'%s=:WithAccessType',
+				$TableAT->GetPrefixedKey('QUAT')
+			))
+			->GroupBy($TableMain->GetPrefixedKey('Main'));
+		}
+
 		return;
 	}
 
 	static protected function
-	FindExtendSorts(Verse $SQL, Datastore $Input):
+	FindExtendSorts(Database\Verse $SQL, Datastore $Input):
 	void {
 
 		switch($Input['Sort']) {
