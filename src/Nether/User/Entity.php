@@ -84,6 +84,10 @@ implements Stringable {
 	public ?string
 	$PSand;
 
+	#[Database\Meta\TypeVarChar(Size: 64)]
+	public string
+	$RemoteAddr;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -215,6 +219,24 @@ implements Stringable {
 	}
 
 	public function
+	UpdateRemoteAddr(?string $RemoteAddr=NULL):
+	static {
+
+		if($RemoteAddr === NULL)
+		$RemoteAddr = (
+			isset($_SERVER['REMOTE_ADDR'])
+			? $_SERVER['REMOTE_ADDR']
+			: NULL
+		);
+
+		$this->Update([
+			'RemoteAddr' => $RemoteAddr
+		]);
+
+		return $this;
+	}
+
+	public function
 	ValidatePassword(string $Password):
 	bool {
 
@@ -239,8 +261,12 @@ implements Stringable {
 	?static {
 
 		if(is_string($Input)) {
-			if(str_contains($Input, '@'))
+			if(is_numeric($Input))
+			return static::GetByID((int)$Input);
+
+			elseif(str_contains($Input, '@'))
 			return static::GetByEmail($Input);
+
 			else
 			return static::GetByAlias($Input);
 		}

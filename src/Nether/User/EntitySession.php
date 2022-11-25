@@ -3,6 +3,9 @@
 namespace Nether\User;
 use Nether;
 
+use Nether\Common;
+use Nether\User;
+
 use Nether\User\Library;
 use Nether\Common\Datafilters;
 
@@ -90,13 +93,13 @@ extends Entity {
 
 		////////
 
-		$User = Nether\User\EntitySession::GetByID($Data->UserID);
+		$User = EntitySession::GetByID($Data->UserID);
 
 		if(!$User)
 		return NULL;
 
-		if($User->TimeBanned)
-		return NULL;
+		//if($User->TimeBanned)
+		//return NULL;
 
 		if(!$User->ValidateSessionHash($Data->UserHash))
 		return NULL;
@@ -104,7 +107,9 @@ extends Entity {
 		////////
 
 		if($User->HasItBeenSinceSeen())
-		$User->UpdateTimeSeen();
+		$User
+		->UpdateTimeSeen()
+		->UpdateRemoteAddr();
 
 		////////
 

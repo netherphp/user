@@ -391,7 +391,7 @@ extends Nether\Console\Client {
 	#[Nether\Console\Meta\Command('access')]
 	#[Nether\Console\Meta\Info('Manage user access types.')]
 	#[Nether\Console\Meta\Arg('id/alias/email', 'User ID, Alias, or Email')]
-	#[Nether\Console\Meta\Value('--set', 'Access Type Key to set. Requires --type and --value to also be set.')]
+	#[Nether\Console\Meta\Value('--set', 'Access Type Key to set. Requires Key:Value syntax or --value to also be set.')]
 	#[Nether\Console\Meta\Value('--drop', 'Access Type Key to drop.')]
 	#[Nether\Console\Meta\Error(1, 'user not found')]
 	public function
@@ -410,6 +410,9 @@ extends Nether\Console\Client {
 		if($this->HasOption('Set')) {
 			$AKey = $this->GetOption('Set');
 			$AValue = $this->GetOption('Value') ?: 1;
+
+			if(str_contains($AKey, ':'))
+			list($AKey, $AValue) = explode(':', $AKey, 2);
 
 			if($AKey && $AValue)
 			EntityAccessType::Insert([
@@ -437,7 +440,8 @@ extends Nether\Console\Client {
 		$List = $User->GetAccessTypes();
 		foreach($List as $Key => $Type) {
 			static::PrintLn(sprintf(
-				'Key: %s, Value: %d',
+				'[%d] Key: %s, Value: %d',
+				$Type->ID,
 				$Key,
 				$Type->Value
 			));
