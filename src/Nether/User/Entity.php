@@ -102,7 +102,9 @@ implements Stringable {
 	__ToString():
 	string {
 
-		return "User({$this->ID}, {$this->Alias})";
+		$Alias = $this->Alias ?? $this->Email;
+
+		return "User({$this->ID}, {$Alias})";
 	}
 
 	protected function
