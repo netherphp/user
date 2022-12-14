@@ -40,7 +40,7 @@ extends Entity {
 	TransmitSession():
 	static {
 
-		$SessionName = Library::$Config[Library::ConfSessionName];
+		$SessionName = Library::Get(Library::ConfSessionName);
 
 		setcookie(
 			$SessionName,

@@ -3,11 +3,13 @@
 namespace Nether\User;
 use Nether;
 
+use Nether\Common;
+
 use Nether\Common\Values;
 use Nether\Object\Datastore;
 
 class Library
-extends Nether\Common\Library {
+extends Common\Library {
 
 	const
 	ConfEnable             = 'Nether.User.Enable',
@@ -57,21 +59,11 @@ extends Nether\Common\Library {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
-	Init(...$Argv):
+	public function
+	OnLoad(...$Argv):
 	void {
 
-		static::OnInit(...$Argv);
-		return;
-	}
-
-	static public function
-	InitDefaultConfig(?Nether\Object\Datastore $Config=NULL):
-	Nether\Object\Datastore {
-
-		parent::InitDefaultConfig($Config);
-
-		$Config->BlendRight([
+		static::$Config->BlendRight([
 			static::ConfEnable             => TRUE,
 			static::ConfUpdateSeenAfter    => Values::SecPerMin,
 			static::ConfConfirmEmailChange => TRUE,
@@ -91,17 +83,19 @@ extends Nether\Common\Library {
 			static::ConfDiscordNewUsers => TRUE
 		]);
 
-		return $Config;
+		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static protected function
-	OnInit(Datastore $Config, ...$Argv):
+	public function
+	OnPrepare(...$Argv):
 	void {
 
-		static::InitDefaultConfig($Config);
+		return;
+	}
+
+	public function
+	OnReady(...$Argv):
+	void {
 
 		return;
 	}
