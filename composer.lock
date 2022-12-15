@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7b6775db6e8a21485741494a0ddfd1d",
+    "content-hash": "80b90f53d88ccf3129e0fec24655a79c",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -727,16 +727,16 @@
         },
         {
             "name": "netherphp/common",
-            "version": "dev-master",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/common.git",
-                "reference": "c8f69f1ca1dd978aa2b2059a6e4770f8679aba0f"
+                "reference": "2581c6bec9b8309bf0e7ae1e5e1dccc088639af6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/common/zipball/c8f69f1ca1dd978aa2b2059a6e4770f8679aba0f",
-                "reference": "c8f69f1ca1dd978aa2b2059a6e4770f8679aba0f",
+                "url": "https://api.github.com/repos/netherphp/common/zipball/2581c6bec9b8309bf0e7ae1e5e1dccc088639af6",
+                "reference": "2581c6bec9b8309bf0e7ae1e5e1dccc088639af6",
                 "shasum": ""
             },
             "require": {
@@ -747,7 +747,6 @@
                 "netherphp/standards": ">=0.1.9",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -766,16 +765,16 @@
                     "role": "developer"
                 }
             ],
-            "description": "Things that I found pretty useful and needed everywhere.",
+            "description": "Things that were found useful and needed everywhere.",
             "keywords": [
                 "php",
                 "utilities"
             ],
             "support": {
                 "issues": "https://github.com/netherphp/common/issues",
-                "source": "https://github.com/netherphp/common/tree/master"
+                "source": "https://github.com/netherphp/common/tree/v5.0.0"
             },
-            "time": "2022-12-09T06:16:52+00:00"
+            "time": "2022-12-15T21:55:30+00:00"
         },
         {
             "name": "netherphp/console",
@@ -783,12 +782,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/console.git",
-                "reference": "198c9e1588d88bad5886e608d0fed550e1b8c400"
+                "reference": "5039614ef4975c71cf274d342595f69bec1bc162"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/console/zipball/198c9e1588d88bad5886e608d0fed550e1b8c400",
-                "reference": "198c9e1588d88bad5886e608d0fed550e1b8c400",
+                "url": "https://api.github.com/repos/netherphp/console/zipball/5039614ef4975c71cf274d342595f69bec1bc162",
+                "reference": "5039614ef4975c71cf274d342595f69bec1bc162",
                 "shasum": ""
             },
             "require": {
@@ -833,7 +832,7 @@
                 "issues": "https://github.com/netherphp/console/issues",
                 "source": "https://github.com/netherphp/console/tree/redux"
             },
-            "time": "2022-11-11T06:56:09+00:00"
+            "time": "2022-12-14T07:22:20+00:00"
         },
         {
             "name": "netherphp/database",
@@ -841,16 +840,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/database.git",
-                "reference": "d6cdff78f702bd69267a7c5ed799dd56ebe7126e"
+                "reference": "0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/database/zipball/d6cdff78f702bd69267a7c5ed799dd56ebe7126e",
-                "reference": "d6cdff78f702bd69267a7c5ed799dd56ebe7126e",
+                "url": "https://api.github.com/repos/netherphp/database/zipball/0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25",
+                "reference": "0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25",
                 "shasum": ""
             },
             "require": {
-                "netherphp/common": "dev-master",
+                "netherphp/common": "^5.0",
                 "netherphp/console": "dev-redux",
                 "netherphp/object": "dev-redux",
                 "php": ">=8.1.0"
@@ -892,7 +891,7 @@
                 "issues": "https://github.com/netherphp/database/issues",
                 "source": "https://github.com/netherphp/database/tree/redux"
             },
-            "time": "2022-11-23T08:18:21+00:00"
+            "time": "2022-12-15T22:00:46+00:00"
         },
         {
             "name": "netherphp/object",
@@ -900,12 +899,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/object.git",
-                "reference": "d2401258e19e48eee4f45781df0fa85509121ba3"
+                "reference": "8d4bacd565b60cbf1799e4996e64f8ec313cd2a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/object/zipball/d2401258e19e48eee4f45781df0fa85509121ba3",
-                "reference": "d2401258e19e48eee4f45781df0fa85509121ba3",
+                "url": "https://api.github.com/repos/netherphp/object/zipball/8d4bacd565b60cbf1799e4996e64f8ec313cd2a5",
+                "reference": "8d4bacd565b60cbf1799e4996e64f8ec313cd2a5",
                 "shasum": ""
             },
             "require": {
@@ -945,7 +944,7 @@
                 "issues": "https://github.com/netherphp/object/issues",
                 "source": "https://github.com/netherphp/object/tree/redux"
             },
-            "time": "2022-11-25T03:06:28+00:00"
+            "time": "2022-12-14T07:22:24+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1914,16 +1913,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.20",
+            "version": "9.2.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "af7463c955007de36db0c5e26d03e2f933c2e980"
+                "reference": "3f893e19712bb0c8bc86665d1562e9fd509c4ef0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/af7463c955007de36db0c5e26d03e2f933c2e980",
-                "reference": "af7463c955007de36db0c5e26d03e2f933c2e980",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/3f893e19712bb0c8bc86665d1562e9fd509c4ef0",
+                "reference": "3f893e19712bb0c8bc86665d1562e9fd509c4ef0",
                 "shasum": ""
             },
             "require": {
@@ -1979,7 +1978,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.20"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.21"
             },
             "funding": [
                 {
@@ -1987,7 +1986,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-13T07:49:28+00:00"
+            "time": "2022-12-14T13:26:54+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3406,8 +3405,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "netherphp/database": 20,
-        "netherphp/common": 20
+        "netherphp/database": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

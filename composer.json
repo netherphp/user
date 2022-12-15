@@ -25,8 +25,8 @@
 	},
 	"require": {
 		"php": "^8.1",
+		"netherphp/common": "^5.0",
 		"netherphp/database": "dev-redux",
-		"netherphp/common": "dev-master",
 		"league/oauth2-github": "^3.1",
 		"league/oauth2-google": "^4.0",
 		"patrickbussmann/oauth2-apple": "^0.2.10",
