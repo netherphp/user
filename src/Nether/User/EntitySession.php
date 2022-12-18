@@ -18,7 +18,7 @@ extends Entity {
 
 		$CData = hash(
 			'sha512',
-			($this->PHash.$this->PSand)
+			sprintf('%s%s', $this->PHash, $this->PSand)
 		);
 
 		return $CData;
@@ -37,16 +37,24 @@ extends Entity {
 	}
 
 	public function
-	TransmitSession():
+	TransmitSession(bool $Overshadow=FALSE):
 	static {
 
-		$SessionName = Library::Get(Library::ConfSessionName);
+		$SessionName = (
+			$Overshadow
+			? Library::Get(Library::ConfSessionOvershadow)
+			: Library::Get(Library::ConfSessionName)
+		);
+
+		$SessionPath = '/';
+		$SessionExpire = strtotime(Library::Get(Library::ConfSessionExpire) ?: '+1 week');
+		$SessionData = $this->GenerateSessionData();
 
 		setcookie(
 			$SessionName,
-			$this->GenerateSessionData(),
-			strtotime('+15 days'),
-			'/'
+			$SessionData,
+			$SessionExpire,
+			$SessionPath
 		);
 
 		return $this;
@@ -56,13 +64,24 @@ extends Entity {
 	DestroySession():
 	static {
 
-		$SessionName = Library::$Config[Library::ConfSessionName];
+		// destroy an overshadow session first so that an admin may
+		// fall back onto their normal session.
+
+		$SessionName = (
+			isset($_COOKIE[Library::Get(Library::ConfSessionOvershadow)])
+			? Library::Get(Library::ConfSessionOvershadow)
+			: Library::Get(Library::ConfSessionName)
+		);
+
+		$SessionPath = '/';
+		$SessionExpire = strtotime('-69 days');
+		$SessionData = '';
 
 		setcookie(
 			$SessionName,
-			'',
-			strtotime('-69 days'),
-			'/'
+			$SessionData,
+			$SessionExpire,
+			$SessionPath
 		);
 
 		return $this;
@@ -75,11 +94,20 @@ extends Entity {
 		return ($Hash === $this->GenerateSessionHash());
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
 	Get():
 	?static {
 
-		$SessionName = Library::$Config[Library::ConfSessionName];
+		$Overshadowed = isset($_COOKIE[Library::Get(Library::ConfSessionOvershadow)]);
+
+		$SessionName = (
+			$Overshadowed
+			? Library::Get(Library::ConfSessionOvershadow)
+			: Library::Get(Library::ConfSessionName)
+		);
 
 		if(!isset($_COOKIE[$SessionName]))
 		return NULL;
@@ -98,14 +126,12 @@ extends Entity {
 		if(!$User)
 		return NULL;
 
-		//if($User->TimeBanned)
-		//return NULL;
-
 		if(!$User->ValidateSessionHash($Data->UserHash))
 		return NULL;
 
 		////////
 
+		if(!$Overshadowed)
 		if($User->HasItBeenSinceSeen())
 		$User
 		->UpdateTimeSeen()

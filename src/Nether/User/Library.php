@@ -15,6 +15,7 @@ extends Common\Library {
 	ConfEnable             = 'Nether.User.Enable',
 	ConfUpdateSeenAfter    = 'Nether.User.SeenUpdateAfter',
 	ConfConfirmEmailChange = 'Nether.User.ConfirmEmailChange',
+	ConfSessionOvershadow  = 'Nether.User.SessionOvershadow',
 	ConfSessionName        = 'Nether.User.SessionName',
 	ConfSessionExpire      = 'Nether.User.SessionExpire';
 
@@ -67,8 +68,9 @@ extends Common\Library {
 			static::ConfEnable             => TRUE,
 			static::ConfUpdateSeenAfter    => Values::SecPerMin,
 			static::ConfConfirmEmailChange => TRUE,
+			static::ConfSessionOvershadow  => 'NetherUserOvershadow',
 			static::ConfSessionName        => 'NetherUserSession',
-			static::ConfSessionExpire      => (Values::SecPerDay * 12),
+			static::ConfSessionExpire      => '+1 week',
 
 			static::ConfAppleEnabled    => TRUE,
 			static::ConfAppleNewUsers   => TRUE,
