@@ -34,10 +34,10 @@ extends Common\Library {
 	// configuration keys for discord signin ///////////////////////
 
 	const
-	ConfDiscordEnabled      = 'Nether.User.Discord.Enabled',
-	ConfDiscordNewUsers     = 'Nether.User.Discord.NewUsers',
-	ConfDiscordID           = 'Nether.User.Discord.ClientID',
-	ConfDiscordSecret       = 'Nether.User.Discord.ClientSecret';
+	ConfDiscordEnabled     = 'Nether.User.Discord.Enabled',
+	ConfDiscordNewUsers    = 'Nether.User.Discord.NewUsers',
+	ConfDiscordID          = 'Nether.User.Discord.ClientID',
+	ConfDiscordSecret      = 'Nether.User.Discord.ClientSecret';
 
 	////////////////////////////////////////////////////////////////
 	// configuration keys for github signin ////////////////////////
@@ -71,17 +71,13 @@ extends Common\Library {
 			static::ConfSessionOvershadow  => 'NetherUserOvershadow',
 			static::ConfSessionName        => 'NetherUserSession',
 			static::ConfSessionExpire      => '+1 week',
-
-			static::ConfAppleEnabled    => TRUE,
+			static::ConfAppleEnabled    => FALSE,
 			static::ConfAppleNewUsers   => TRUE,
-
-			static::ConfGitHubEnabled   => TRUE,
+			static::ConfGitHubEnabled   => FALSE,
 			static::ConfGitHubNewUsers  => TRUE,
-
-			static::ConfGoogleEnabled   => TRUE,
+			static::ConfGoogleEnabled   => FALSE,
 			static::ConfGoogleNewUsers  => TRUE,
-
-			static::ConfDiscordEnabled  => TRUE,
+			static::ConfDiscordEnabled  => FALSE,
 			static::ConfDiscordNewUsers => TRUE
 		]);
 
