@@ -1,6 +1,7 @@
 <?php
 
 namespace Nether\User;
+
 use Nether;
 use Nether\Database\Verse;
 use Nether\Object\Datastore;
@@ -29,7 +30,7 @@ extends Nether\Database\Prototype {
 	public int
 	$TimeCreated;
 
-	#[Nether\Database\Meta\TypeVarChar(Size: 16)]
+	#[Nether\Database\Meta\TypeVarChar(Size: 64)]
 	public string
 	$Key;
 
@@ -40,13 +41,74 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	IsKey(string $Test):
+	bool {
+
+		return ($this->Key === $Test);
+	}
+
+	public function
+	IsNotKey(string $Test):
+	bool {
+
+		return ($this->Key !== $Test);
+	}
+
+	public function
+	IsEq(int $Test):
+	bool {
+
+		return ($this->Value === $Test);
+	}
+
+	public function
+	IsNot(int $Test):
+	bool {
+
+		return ($this->Value !== $Test);
+	}
+
+	public function
+	IsGT(int $Test):
+	bool {
+
+		return ($this->Value > $Test);
+	}
+
+	public function
+	IsGTE(int $Test):
+	bool {
+
+		return ($this->Value >= $Test);
+	}
+
+	public function
+	IsLT(int $Test):
+	bool {
+
+		return ($this->Value < $Test);
+	}
+
+	public function
+	IsLTE(int $Test):
+	bool {
+
+		return ($this->Value < $Test);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
 	DropByEntityKey(int $EntityID, string $Key):
 	void {
 
 		$Table = static::GetTableInfo();
+		$DBM = new Nether\Database\Manager;
+		$DBC = $DBM->Get('Default');
 
-		(Nether\Database::Get())
+		($DBC)
 		->NewVerse()
 		->Delete($Table->Name)
 		->Where('`EntityID`=:EntityID AND `Key`=:Key')

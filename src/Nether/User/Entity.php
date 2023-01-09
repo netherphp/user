@@ -98,6 +98,12 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	protected Datastore
+	$AccessTypes;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	__ToString():
 	string {
@@ -129,10 +135,15 @@ implements Stringable {
 	}
 
 	public function
-	GetAccessTypes():
+	GetAccessTypes(bool $Force=FALSE):
 	Datastore {
 
-		$Output = new Datastore;
+		if(isset($this->AccessTypes) && !$Force)
+		return $this->AccessTypes;
+
+		////////
+
+		$this->AccessTypes = new Datastore;
 		$Val = NULL;
 
 		////////
@@ -142,11 +153,11 @@ implements Stringable {
 		]);
 
 		foreach($Result as $Val)
-		$Output->Shove($Val->Key, $Val);
+		$this->AccessTypes->Shove($Val->Key, $Val);
 
 		////////
 
-		return $Output;
+		return $this->AccessTypes;
 	}
 
 	public function
@@ -480,7 +491,7 @@ implements Stringable {
 				'%s=:WithAccessType',
 				$TableAT->GetPrefixedKey('QUAT')
 			))
-			->GroupBy($TableMain->GetPrefixedKey('Main'));
+			->Group($TableMain->GetPrefixedKey('Main'));
 		}
 
 		return;
