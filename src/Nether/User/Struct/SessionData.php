@@ -7,7 +7,7 @@ use Stringable;
 use Nether\Common\Datafilters;
 
 class SessionData
-extends Nether\Object\Prototype
+extends Nether\Common\Prototype
 implements Stringable {
 
 	public int

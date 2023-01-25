@@ -6,7 +6,7 @@ use Nether;
 use Nether\Common;
 
 use Nether\Common\Values;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class Library
 extends Common\Library {

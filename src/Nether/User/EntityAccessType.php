@@ -4,7 +4,7 @@ namespace Nether\User;
 
 use Nether;
 use Nether\Database\Verse;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 #[Nether\Database\Meta\TableClass('UserAccessTypes')]
 #[Nether\Database\Meta\MultiFieldIndex([ 'EntityID', 'Key' ], Unique: TRUE)]
@@ -172,7 +172,7 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Nether\Object\Prototype($Input, [
+		$Input = new Nether\Common\Prototype($Input, [
 			'TimeCreated' => time()
 		]);
 

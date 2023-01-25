@@ -9,9 +9,9 @@ use Nether\User;
 
 use Exception;
 use Stringable;
-use Nether\Object\Datastore;
-use Nether\Object\Prototype\ConstructArgs;
-use Nether\Object\Meta\PropertyFactory;
+use Nether\Common\Datastore;
+use Nether\Common\Prototype\ConstructArgs;
+use Nether\Common\Meta\PropertyFactory;
 
 #[Database\Meta\TableClass('Users')]
 class Entity
