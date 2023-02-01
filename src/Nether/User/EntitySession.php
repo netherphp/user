@@ -1,16 +1,41 @@
 <?php
 
 namespace Nether\User;
-use Nether;
 
-use Nether\Common;
-use Nether\User;
+use Nether\Database;
 
 use Nether\User\Library;
-use Nether\Common\Datafilters;
 
 class EntitySession
 extends Entity {
+
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
+	public ?string
+	$AuthAppleID;
+
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
+	public ?string
+	$AuthDiscordID;
+
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
+	public ?string
+	$AuthGoogleID;
+
+	#[Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\FieldIndex]
+	public ?string
+	$AuthGitHubID;
+
+	#[Database\Meta\TypeChar(Size: 255)]
+	public ?string
+	$PHash;
+
+	#[Database\Meta\TypeChar(Size: 128)]
+	public ?string
+	$PSand;
 
 	public function
 	GenerateSessionHash():
@@ -94,6 +119,16 @@ extends Entity {
 		return ($Hash === $this->GenerateSessionHash());
 	}
 
+	public function
+	ValidatePassword(string $Password):
+	bool {
+
+		if($this->PHash === NULL)
+		return FALSE;
+
+		return password_verify($Password, $this->PHash);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -138,6 +173,97 @@ extends Entity {
 		->UpdateRemoteAddr();
 
 		////////
+
+		return $User;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	GetByGitHubID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthGitHubID', $AuthID);
+	}
+
+	static public function
+	GetByGitHubEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthGitHubID && ($User->AuthGitHubID !== $AuthID))
+		throw new Error\AuthMismatch;
+
+		return $User;
+	}
+
+	static public function
+	GetByAppleID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthAppleID', $AuthID);
+	}
+
+	static public function
+	GetByAppleEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthAppleID && ($User->AuthAppleID !== $AuthID))
+		throw new Error\AuthMismatch;
+
+		return $User;
+	}
+
+	static public function
+	GetByDiscordID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthDiscordID', $AuthID);
+	}
+
+	static public function
+	GetByDiscordEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthDiscordID && ($User->AuthDiscordID !== $AuthID))
+		throw new Error\AuthMismatch;
+
+		return $User;
+	}
+
+	static public function
+	GetByGoogleID(string $AuthID):
+	?static {
+
+		return static::GetByField('AuthGoogleID', $AuthID);
+	}
+
+	static public function
+	GetByGoogleEmail(string $Email, string $AuthID):
+	?static {
+
+		$User = static::GetByField('Email', $Email);
+
+		if(!$User)
+		return NULL;
+
+		if($User->AuthGoogleID && ($User->AuthGoogleID !== $AuthID))
+		throw new Error\AuthMismatch;
 
 		return $User;
 	}

@@ -13,7 +13,7 @@ use Nether\Common\Datastore;
 use Nether\Common\Prototype\ConstructArgs;
 use Nether\Common\Meta\PropertyFactory;
 
-#[Database\Meta\TableClass('Users')]
+#[Database\Meta\TableClass('Users', 'U')]
 class Entity
 extends Nether\Database\Prototype
 implements Stringable {
@@ -56,33 +56,6 @@ implements Stringable {
 	public bool
 	$Activated;
 
-	#[Database\Meta\TypeChar(Size: 64)]
-	#[Database\Meta\FieldIndex]
-	public ?string
-	$AuthAppleID;
-
-	#[Database\Meta\TypeChar(Size: 64)]
-	#[Database\Meta\FieldIndex]
-	public ?string
-	$AuthDiscordID;
-
-	#[Database\Meta\TypeChar(Size: 64)]
-	#[Database\Meta\FieldIndex]
-	public ?string
-	$AuthGoogleID;
-
-	#[Database\Meta\TypeChar(Size: 64)]
-	#[Database\Meta\FieldIndex]
-	public ?string
-	$AuthGitHubID;
-
-	#[Database\Meta\TypeChar(Size: 255)]
-	public ?string
-	$PHash;
-
-	#[Database\Meta\TypeChar(Size: 128)]
-	public ?string
-	$PSand;
 
 	#[Database\Meta\TypeVarChar(Size: 64)]
 	public string
@@ -249,16 +222,6 @@ implements Stringable {
 		return $this;
 	}
 
-	public function
-	ValidatePassword(string $Password):
-	bool {
-
-		if($this->PHash === NULL)
-		return FALSE;
-
-		return password_verify($Password, $this->PHash);
-	}
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -301,93 +264,6 @@ implements Stringable {
 		return static::GetByField('Email', $Email);
 	}
 
-	static public function
-	GetByGitHubID(string $AuthID):
-	?static {
-
-		return static::GetByField('AuthGitHubID', $AuthID);
-	}
-
-	static public function
-	GetByGitHubEmail(string $Email, string $AuthID):
-	?static {
-
-		$User = static::GetByField('Email', $Email);
-
-		if(!$User)
-		return NULL;
-
-		if($User->AuthGitHubID && ($User->AuthGitHubID !== $AuthID))
-		throw new Error\AuthMismatch;
-
-		return $User;
-	}
-
-	static public function
-	GetByAppleID(string $AuthID):
-	?static {
-
-		return static::GetByField('AuthAppleID', $AuthID);
-	}
-
-	static public function
-	GetByAppleEmail(string $Email, string $AuthID):
-	?static {
-
-		$User = static::GetByField('Email', $Email);
-
-		if(!$User)
-		return NULL;
-
-		if($User->AuthAppleID && ($User->AuthAppleID !== $AuthID))
-		throw new Error\AuthMismatch;
-
-		return $User;
-	}
-
-	static public function
-	GetByDiscordID(string $AuthID):
-	?static {
-
-		return static::GetByField('AuthDiscordID', $AuthID);
-	}
-
-	static public function
-	GetByDiscordEmail(string $Email, string $AuthID):
-	?static {
-
-		$User = static::GetByField('Email', $Email);
-
-		if(!$User)
-		return NULL;
-
-		if($User->AuthDiscordID && ($User->AuthDiscordID !== $AuthID))
-		throw new Error\AuthMismatch;
-
-		return $User;
-	}
-
-	static public function
-	GetByGoogleID(string $AuthID):
-	?static {
-
-		return static::GetByField('AuthGoogleID', $AuthID);
-	}
-
-	static public function
-	GetByGoogleEmail(string $Email, string $AuthID):
-	?static {
-
-		$User = static::GetByField('Email', $Email);
-
-		if(!$User)
-		return NULL;
-
-		if($User->AuthGoogleID && ($User->AuthGoogleID !== $AuthID))
-		throw new Error\AuthMismatch;
-
-		return $User;
-	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -424,6 +300,12 @@ implements Stringable {
 
 		return parent::Insert($Dataset);
 	}
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -485,13 +367,13 @@ implements Stringable {
 				'%s ON %s=%s',
 				$TableAT->GetAliasedTable('QUAT'),
 				$TableAT->GetPrefixedField('QUAT', 'EntityID'),
-				$TableMain->GetPrefixedKey('Main')
+				$TableMain->GetAliasedPK('Main')
 			))
 			->Where(sprintf(
 				'%s=:WithAccessType',
-				$TableAT->GetPrefixedKey('QUAT')
+				$TableAT->GetAliasedPK('QUAT')
 			))
-			->Group($TableMain->GetPrefixedKey('Main'));
+			->Group($TableMain->GetAliasedPK('Main'));
 		}
 
 		return;

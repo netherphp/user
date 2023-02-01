@@ -156,7 +156,7 @@ extends Nether\Database\Prototype {
 
 		if($Input['Index'] !== NULL) {
 			$SQL
-			->Group($Table->GetPrefixedKey('Main'))
+			->Group($Table->GetAliasedPK('Main'))
 			->Sort($Table->GetPrefixedField('Main', 'Key'), $SQL::SortAsc);
 
 			return;
