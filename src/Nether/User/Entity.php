@@ -100,21 +100,30 @@ implements Stringable {
 	GetSinceBanned():
 	Common\Units\Timeframe {
 
-		return new Common\Units\Timeframe(Start: $this->TimeBanned);
+		return new Common\Units\Timeframe(
+			Start: $this->TimeBanned,
+			Precision: 3
+		);
 	}
 
 	public function
 	GetSinceCreated():
 	Common\Units\Timeframe {
 
-		return new Common\Units\Timeframe(Start: $this->TimeCreated);
+		return new Common\Units\Timeframe(
+			Start: $this->TimeCreated,
+			Precision: 3
+		);
 	}
 
 	public function
 	GetSinceSeen():
 	Common\Units\Timeframe {
 
-		return new Common\Units\Timeframe(Start: $this->TimeSeen);
+		return new Common\Units\Timeframe(
+			Start: $this->TimeSeen,
+			Precision: 3
+		);
 	}
 
 	public function
