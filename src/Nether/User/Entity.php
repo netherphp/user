@@ -97,6 +97,27 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetSinceBanned():
+	Common\Units\Timeframe {
+
+		return new Common\Units\Timeframe(Start: $this->TimeBanned);
+	}
+
+	public function
+	GetSinceCreated():
+	Common\Units\Timeframe {
+
+		return new Common\Units\Timeframe(Start: $this->TimeCreated);
+	}
+
+	public function
+	GetSinceSeen():
+	Common\Units\Timeframe {
+
+		return new Common\Units\Timeframe(Start: $this->TimeSeen);
+	}
+
+	public function
 	IsAdmin(int $MinLevel=1):
 	bool {
 
@@ -263,7 +284,6 @@ implements Stringable {
 
 		return static::GetByField('Email', $Email);
 	}
-
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
