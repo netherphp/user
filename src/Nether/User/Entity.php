@@ -25,6 +25,7 @@ implements Stringable {
 
 	#[Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
 	#[Database\Meta\FieldIndex]
+	#[Database\Meta\NullifyEmptyValue]
 	public ?string
 	$Alias;
 
@@ -83,7 +84,7 @@ implements Stringable {
 
 		$Alias = $this->Alias ?? $this->Email;
 
-		return "User({$this->ID}, {$Alias})";
+		return "UserEntity({$this->ID}, {$Alias})";
 	}
 
 	protected function
@@ -102,7 +103,8 @@ implements Stringable {
 
 		return new Common\Units\Timeframe(
 			Start: $this->TimeBanned,
-			Precision: 3
+			Precision: 3,
+			EmptyString: 'Now'
 		);
 	}
 
@@ -112,7 +114,8 @@ implements Stringable {
 
 		return new Common\Units\Timeframe(
 			Start: $this->TimeCreated,
-			Precision: 3
+			Precision: 3,
+			EmptyString: 'Now'
 		);
 	}
 
@@ -122,7 +125,8 @@ implements Stringable {
 
 		return new Common\Units\Timeframe(
 			Start: $this->TimeSeen,
-			Precision: 3
+			Precision: 3,
+			EmptyString: 'Now'
 		);
 	}
 

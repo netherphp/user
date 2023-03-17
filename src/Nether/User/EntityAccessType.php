@@ -172,11 +172,13 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Nether\Common\Prototype($Input, [
+		$Input = new Datastore($Input);
+
+		$Input->BlendRight([
 			'TimeCreated' => time()
 		]);
 
-		return parent::Insert((array)$Input);
+		return parent::Insert($Input);
 	}
 
 }
