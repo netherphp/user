@@ -26,11 +26,15 @@ implements Stringable {
 	#[Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
 	#[Database\Meta\FieldIndex]
 	#[Database\Meta\NullifyEmptyValue]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ 'Nether\\User\\Library', 'FilterAlias' ])]
 	public ?string
 	$Alias;
 
 	#[Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ 'Nether\\Common\\Datafilters', 'Email' ])]
 	public string
 	$Email;
 
@@ -56,7 +60,6 @@ implements Stringable {
 	#[Database\Meta\TypeIntSmall(Unsigned: TRUE)]
 	public bool
 	$Activated;
-
 
 	#[Database\Meta\TypeVarChar(Size: 64)]
 	public string

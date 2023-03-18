@@ -164,4 +164,18 @@ extends Common\Library {
 		);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FilterAlias(mixed $Item):
+	string {
+
+		Common\Datafilters::Prepare($Item);
+
+		$Item = preg_replace('/[^a-zA-Z0-9\-\_]/', '', $Item);
+
+		return $Item;
+	}
+
 }
