@@ -171,6 +171,18 @@ implements Stringable {
 	}
 
 	public function
+	HasAccessType(string $Key, mixed $Val=1):
+	bool {
+
+		$Access = $this->GetAccessTypes();
+
+		if(!$Access->HasKey($Key))
+		return FALSE;
+
+		return $Access[$Key]->IsEq($Val);
+	}
+
+	public function
 	HasItBeenSinceSeen(?int $Diff=NULL):
 	bool {
 
