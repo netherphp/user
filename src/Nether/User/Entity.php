@@ -23,6 +23,11 @@ implements Stringable {
 	public int
 	$ID;
 
+	#[Database\Meta\TypeChar(Size: 36, Nullable: FALSE)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$UUID;
+
 	#[Database\Meta\TypeChar(Size: 24, Variable: TRUE, Default: NULL)]
 	#[Database\Meta\FieldIndex]
 	#[Database\Meta\NullifyEmptyValue]
@@ -338,6 +343,7 @@ implements Stringable {
 	?static {
 
 		$Dataset = new Datastore([
+			'UUID'        => Common\UUID::V7(),
 			'TimeCreated' => time(),
 			'PHash'       => NULL,
 			'PSand'       => static::GeneratePocketSand(),
