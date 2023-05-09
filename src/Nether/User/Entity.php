@@ -188,6 +188,19 @@ implements Stringable {
 	}
 
 	public function
+	HasAccessTypeOrAdmin(string $Key, mixed $Val=1, int $Admin=1):
+	bool {
+
+		if($this->IsAdmin($Admin))
+		return TRUE;
+
+		if($this->HasAccessType($Key, $Val))
+		return TRUE;
+
+		return FALSE;
+	}
+
+	public function
 	HasItBeenSinceSeen(?int $Diff=NULL):
 	bool {
 
