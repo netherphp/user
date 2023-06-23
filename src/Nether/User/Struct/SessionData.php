@@ -77,4 +77,17 @@ implements Stringable {
 		return new static($Data);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	New(int $UserID=NULL, string $UserHash=NULL):
+	static {
+
+		return new static([
+			'UserID'   => $UserID,
+			'UserHash' => $UserHash
+		]);
+	}
+
 }
