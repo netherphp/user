@@ -2,41 +2,60 @@
 
 namespace Nether\User;
 
-use Nether;
-use Nether\Database\Verse;
-use Nether\Common\Datastore;
+use Nether\Common;
+use Nether\Database;
 
-#[Nether\Database\Meta\TableClass('UserAccessTypes')]
-#[Nether\Database\Meta\MultiFieldIndex([ 'EntityID', 'Key' ], Unique: TRUE)]
-#[Nether\Database\Meta\InsertReuseUnique]
-#[Nether\Database\Meta\InsertUpdate]
+#[Database\Meta\TableClass('UserAccessTypes')]
+#[Database\Meta\MultiFieldIndex([ 'EntityID', 'Key' ], Unique: TRUE)]
+#[Database\Meta\InsertReuseUnique]
+#[Database\Meta\InsertUpdate]
 class EntityAccessType
-extends Nether\Database\Prototype {
+extends Database\Prototype {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
-	#[Nether\Database\Meta\PrimaryKey]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Database\Meta\PrimaryKey]
 	public int
 	$ID;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
-	#[Nether\Database\Meta\ForeignKey('Users', 'ID')]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\ForeignKey('Users', 'ID')]
 	public int
 	$EntityID;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	public int
 	$TimeCreated;
 
-	#[Nether\Database\Meta\TypeVarChar(Size: 64)]
+	#[Database\Meta\TypeVarChar(Size: 64)]
 	public string
 	$Key;
 
-	#[Nether\Database\Meta\TypeInt]
+	#[Database\Meta\TypeInt]
 	public int
 	$Value;
+
+	////////
+
+	#[Database\Meta\TableJoin('EntityID')]
+	public Entity
+	$Entity;
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady(Common\Prototype\ConstructArgs $Args):
+	void {
+
+		if($Args->InputHas('U_ID'))
+		$this->Entity = Entity::FromPrefixedDataset($Args->Input, 'U_');
+
+		return;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -105,7 +124,7 @@ extends Nether\Database\Prototype {
 	void {
 
 		$Table = static::GetTableInfo();
-		$DBM = new Nether\Database\Manager;
+		$DBM = new Database\Manager;
 		$DBC = $DBM->Get('Default');
 
 		($DBC)
@@ -124,17 +143,18 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static protected function
-	FindExtendOptions(Datastore $Input):
+	FindExtendOptions(Common\Datastore $Input):
 	void {
 
 		$Input['EntityID'] ??= NULL;
+		$Input['Key'] ??= NULL;
 		$Input['Index'] ??= FALSE;
 
 		return;
 	}
 
 	static protected function
-	FindExtendFilters(Verse $SQL, Datastore $Input):
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
 		$Table = static::GetTableInfo();
@@ -145,11 +165,17 @@ extends Nether\Database\Prototype {
 			$Table->GetPrefixedField('Main', 'EntityID')
 		));
 
+		if($Input['Key'] !== NULL)
+		$SQL->Where(sprintf(
+			'%s=:Key',
+			$Table->GetPrefixedField('Main', 'Key')
+		));
+
 		return;
 	}
 
 	static protected function
-	FindExtendSorts(Verse $SQL, Datastore $Input):
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
 		$Table = static::GetTableInfo();
@@ -172,7 +198,7 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Datastore($Input);
+		$Input = new Common\Datastore($Input);
 
 		$Input->BlendRight([
 			'TimeCreated' => time()

@@ -106,6 +106,19 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetAlias(bool $EmailFallback=FALSE):
+	string {
+
+		if($this->Alias)
+		return $this->Alias;
+
+		if($EmailFallback)
+		return substr($this->Email, 0, strpos($this->Email, '@'));
+
+		return '';
+	}
+
+	public function
 	GetSinceBanned():
 	Common\Units\Timeframe {
 
