@@ -39,7 +39,7 @@ implements Stringable {
 	#[Database\Meta\TypeChar(Size: 255, Nullable: FALSE, Variable: TRUE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ 'Nether\\Common\\Datafilters', 'Email' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Email' ])]
 	public string
 	$Email;
 
