@@ -1,13 +1,13 @@
 <?php
 
 namespace Nether\User\Struct;
-use Nether;
+
+use Nether\Common;
 
 use Stringable;
-use Nether\Common\Datafilters;
 
 class SessionData
-extends Nether\Common\Prototype
+extends Common\Prototype
 implements Stringable {
 
 	public int
@@ -37,7 +37,7 @@ implements Stringable {
 	base64 encode a json description of this object.
 	//*/
 
-		return Datafilters::Base64Encode(json_encode([
+		return Common\Filters\Text::Base64Encode(json_encode([
 			'UserID'   => $this->UserID,
 			'UserHash' => $this->UserHash
 		]));
@@ -59,7 +59,7 @@ implements Stringable {
 		// make sure no ducks are trying to get in here the stupid way
 		// until php 8.3 adds json_validate.
 
-		$JSON = Datafilters::Base64Decode($Input);
+		$JSON = Common\Filters\Text::Base64Decode($Input);
 
 		if(!$JSON || !str_contains($JSON, 'UserID'))
 		return NULL;

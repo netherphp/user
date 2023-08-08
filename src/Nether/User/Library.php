@@ -1,12 +1,8 @@
 <?php
 
 namespace Nether\User;
-use Nether;
 
 use Nether\Common;
-
-use Nether\Common\Values;
-use Nether\Common\Datastore;
 
 class Library
 extends Common\Library {
@@ -66,7 +62,7 @@ extends Common\Library {
 
 		static::$Config->BlendRight([
 			static::ConfEnable             => TRUE,
-			static::ConfUpdateSeenAfter    => Values::SecPerMin,
+			static::ConfUpdateSeenAfter    => Common\Values::SecPerMin,
 			static::ConfConfirmEmailChange => TRUE,
 			static::ConfSessionOvershadow  => 'NetherUserOvershadow',
 			static::ConfSessionName        => 'NetherUserSession',
@@ -171,7 +167,7 @@ extends Common\Library {
 	FilterAlias(mixed $Item):
 	string {
 
-		Common\Datafilters::Prepare($Item);
+		Common\Filters\Text::Prepare($Item);
 
 		$Item = preg_replace('/[^a-zA-Z0-9\-\_]/', '', $Item);
 
