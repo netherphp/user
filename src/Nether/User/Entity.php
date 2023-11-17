@@ -16,7 +16,12 @@ use Nether\Common\Meta\PropertyFactory;
 #[Database\Meta\TableClass('Users', 'U')]
 class Entity
 extends Nether\Database\Prototype
-implements Stringable {
+implements
+	Stringable,
+	Common\Interfaces\ToString {
+
+	use
+	Common\Package\StringableAsToString;
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
 	#[Database\Meta\PrimaryKey]
@@ -87,12 +92,12 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__ToString():
+	ToString():
 	string {
 
-		$Alias = $this->Alias ?? $this->Email;
+		$Alias = $this->Alias ?: $this->Email;
 
-		return "UserEntity({$this->ID}, {$Alias})";
+		return "User\Entity({$this->ID}, {$Alias})";
 	}
 
 	protected function
