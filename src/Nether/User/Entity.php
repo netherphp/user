@@ -67,8 +67,8 @@ implements
 	public int
 	$Admin;
 
-	#[Database\Meta\TypeIntSmall(Unsigned: TRUE)]
-	public bool
+	#[Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
+	public int
 	$Activated;
 
 	#[Database\Meta\TypeVarChar(Size: 64)]
