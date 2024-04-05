@@ -166,11 +166,13 @@ extends Entity {
 
 		////////
 
-		if(!$Overshadowed)
-		if($User->HasItBeenSinceSeen())
-		$User
-		->UpdateTimeSeen()
-		->UpdateRemoteAddr();
+		if(!$Overshadowed) {
+			if($User->HasItBeenSinceSeen()) {
+				$User->UpdateTimeSeen();
+				$User->UpdateRemoteAddr();
+				$User->TransmitSession();
+			}
+		}
 
 		////////
 
