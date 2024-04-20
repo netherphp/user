@@ -172,7 +172,7 @@ implements
 	Datastore {
 
 		if(isset($this->AccessTypes) && !$Force)
-		return $this->AccessTypes;
+		return $this->AccessTypes->Copy();
 
 		////////
 
@@ -190,7 +190,7 @@ implements
 
 		////////
 
-		return $this->AccessTypes;
+		return $this->AccessTypes->Copy();
 	}
 
 	public function
