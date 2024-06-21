@@ -194,6 +194,15 @@ implements
 	}
 
 	public function
+	PushAccessType(EntityAccessType $AT):
+	static {
+
+		$this->AccessTypes->Shove($AT->Key, $AT);
+
+		return $this;
+	}
+
+	public function
 	HasAccessType(string $Key, mixed $Val=1):
 	bool {
 
