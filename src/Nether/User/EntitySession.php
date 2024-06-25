@@ -75,12 +75,12 @@ extends Entity {
 		$SessionExpire = strtotime(Library::Get(Library::ConfSessionExpire) ?: '+1 week');
 		$SessionData = $this->GenerateSessionData();
 
-		setcookie(
-			$SessionName,
-			$SessionData,
-			$SessionExpire,
-			$SessionPath
-		);
+		setcookie($SessionName, $SessionData, [
+			'expires'  => $SessionExpire,
+			'path'     => $SessionPath,
+			'secure'   => TRUE,
+			'samesite' => 'Lax'
+		]);
 
 		return $this;
 	}
