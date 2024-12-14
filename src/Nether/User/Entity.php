@@ -64,6 +64,8 @@ implements
 	$TimeBanned;
 
 	#[Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$Admin;
 
