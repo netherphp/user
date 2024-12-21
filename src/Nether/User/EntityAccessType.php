@@ -61,6 +61,24 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	DescribeForPublicAPI():
+	array {
+
+		$Output = [
+			'ID'          => $this->ID,
+			'EntityID'    => $this->EntityID,
+			'TimeCreated' => $this->TimeCreated,
+			'Key'         => $this->Key,
+			'Value'       => $this->Value
+		];
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
 	IsKey(string $Test):
 	bool {
 
