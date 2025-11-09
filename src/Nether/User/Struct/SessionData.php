@@ -81,7 +81,7 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(int $UserID=NULL, string $UserHash=NULL):
+	New(?int $UserID=NULL, ?string $UserHash=NULL):
 	static {
 
 		return new static([
