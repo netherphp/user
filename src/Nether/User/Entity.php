@@ -176,6 +176,13 @@ implements
 	}
 
 	public function
+	HasBeenSeen():
+	bool {
+
+		return !!$this->TimeSeen;
+	}
+
+	public function
 	IsActivated():
 	bool {
 

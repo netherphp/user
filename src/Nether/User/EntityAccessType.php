@@ -21,7 +21,7 @@ extends Database\Prototype {
 	$ID;
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
-	#[Database\Meta\ForeignKey('Users', 'ID')]
+	#[Database\Meta\ForeignKey('Users', 'ID', Update: TRUE, Delete: TRUE)]
 	public int
 	$EntityID;
 
