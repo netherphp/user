@@ -80,9 +80,17 @@ implements
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[PropertyFactory('FromTime', 'TimeSeen')]
+	public Common\Date
+	$DateSeen;
+
 	#[PropertyFactory('FromTime', 'TimeCreated')]
 	public Common\Date
 	$DateCreated;
+
+	#[PropertyFactory('FromTime', 'TimeBanned')]
+	public Common\Date
+	$DateBanned;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -113,16 +121,25 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	public function
-	GetAlias(bool $EmailFallback=FALSE):
+	GetAlias(bool $EmailFallback=TRUE):
 	string {
 
 		if($this->Alias)
 		return $this->Alias;
 
-		if($EmailFallback)
-		return substr($this->Email, 0, strpos($this->Email, '@'));
+		if($EmailFallback) {
+			$Email = new Common\Units\EmailAddress($this->Email);
+			return $Email->GetLocal();
+		}
 
-		return '';
+		return $this->UUID;
+	}
+
+	public function
+	GetEmail():
+	string {
+
+		return $this->Email;
 	}
 
 	public function
@@ -159,15 +176,28 @@ implements
 	}
 
 	public function
+	IsActivated():
+	bool {
+
+		return ($this->Activated > 0);
+	}
+
+	public function
 	IsAdmin(int $MinLevel=1):
 	bool {
 
-		return (
-			TRUE
-			&& $this->Admin
-			&& ($this->Admin >= $MinLevel)
-		);
+		return ($this->Admin >= $MinLevel);
 	}
+
+	public function
+	IsBanned():
+	bool {
+
+		return ($this->TimeBanned > 0);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetAccessTypes(bool $Force=FALSE):
@@ -238,6 +268,9 @@ implements
 
 		return (time() - $this->TimeSeen) >= $Diff;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	DisablePassword():
@@ -316,6 +349,69 @@ implements
 		]);
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2026-05-27')]
+	public function
+	DescribeForPublicAPI():
+	array {
+
+		$Output = [
+			'ID'    => $this->ID,
+			'UUID'  => $this->UUID,
+			'Email' => $this->GetEmail(),
+			'Alias' => $this->GetAlias(),
+
+			'TimeCreated' => $this->TimeCreated,
+			'TimeSeen'    => $this->TimeSeen,
+			'TimeBanned'  => $this->TimeBanned,
+			'RemoteAddr'  => $this->RemoteAddr,
+
+			'Activated'   => $this->Activated,
+			'Admin'       => $this->Admin
+		];
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2026-05-26')]
+	public function
+	GetDataAttr(?iterable $More=NULL, bool $Prefix=FALSE):
+	Common\Datastore {
+
+		$Output = new Common\Datastore([
+			'id'   => $this->ID,
+			'uuid' => $this->UUID
+		]);
+
+		if(is_iterable($More))
+		$Output->MergeRight($More);
+
+		if($Prefix)
+		$Output->RemapKeys(
+			fn(string $K, string $V)
+			=> [ "data-{$K}"=> $V ]
+		);
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2026-05-26')]
+	public function
+	GetDataAttrForHTML(?iterable $More=NULL, bool $Prefix=TRUE):
+	string {
+
+		$Output = $this->GetDataAttr($More, $Prefix);
+
+		$Output->RemapKeys(
+			fn(string $K, string $V)
+			=> [ $K=> sprintf('%s="%s"', $K, htmlentities($V)) ]
+		);
+
+		return $Output->Join(' ');
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -485,6 +581,12 @@ implements
 			break;
 			case 'alias-za':
 				$SQL->Sort('Main.Alias', $SQL::SortDesc);
+			break;
+			case 'email-az':
+				$SQL->Sort('Main.Email', $SQL::SortAsc);
+			break;
+			case 'email-za':
+				$SQL->Sort('Main.Email', $SQL::SortDesc);
 			break;
 			case 'newest':
 				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
